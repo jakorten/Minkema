@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>BNF — Basis HTML</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;600;700&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --border: #2a2f3e;
+    --accent: #5b8dee;
+    --green: #4ecb8d;
+    --orange: #f4a24a;
+    --red: #e06c75;
+    --purple: #c678dd;
+    --text: #d0d6e8;
+    --muted: #6b738f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px 24px 60px;
+    min-height: 100vh;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; }
+
+  header { margin-bottom: 44px; }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  header h1 span { color: var(--accent); }
+  header p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.82rem;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* Section groups */
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 32px 0 10px;
+  }
+
+  /* Rule card */
+  .rule {
+    display: grid;
+    grid-template-columns: 180px 32px 1fr;
+    align-items: start;
+    gap: 0 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 2;
+    transition: border-color 0.15s;
+  }
+  .rule:hover { border-color: var(--accent); }
+
+  .nt-lhs {
+    color: var(--accent);
+    font-weight: 700;
+    padding-right: 8px;
+    white-space: nowrap;
+  }
+  .arrow {
+    color: var(--muted);
+    text-align: center;
+    padding: 0 4px;
+    user-select: none;
+  }
+  .rhs { display: flex; flex-direction: column; gap: 2px; }
+  .alt { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .alt:not(:first-child)::before {
+    content: '|';
+    color: var(--muted);
+    margin-right: 4px;
+    font-weight: 700;
+  }
+
+  /* Tokens */
+  .nt   { color: var(--accent); }
+  .t    { color: var(--green); }
+  .eps  { color: var(--purple); font-style: italic; }
+  .dots { color: var(--muted); }
+
+  /* Annotation */
+  .note {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 2px;
+    line-height: 1.4;
+    grid-column: 3;
+  }
+
+  /* Highlight: this is the NESTING magic */
+  .rule.nesting { border-color: #3d4a6a; background: #161c2e; }
+  .rule.nesting .nt-lhs { color: var(--orange); }
+  .rule.nesting .nt   { color: var(--orange); }
+  .nesting-badge {
+    display: inline-block;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--orange);
+    color: #000;
+    padding: 2px 7px;
+    border-radius: 99px;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  /* Example section */
+  .example-block {
+    margin-top: 40px;
+    padding: 24px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .example-block h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .example-block h2 span { color: var(--accent); font-size: 0.8rem; font-weight: 300; margin-left: 8px; }
+
+  .derivation {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.83rem;
+    line-height: 2;
+    color: var(--text);
+  }
+  .derivation .step { display: flex; align-items: baseline; gap: 12px; }
+  .derivation .stepnum {
+    min-width: 24px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-align: right;
+  }
+  .derivation .arrow-d { color: var(--muted); margin: 0 4px; }
+  .derivation .replaced { color: var(--orange); }
+  .derivation .result   { color: var(--green); }
+
+  .callout {
+    margin-top: 20px;
+    padding: 12px 18px;
+    background: #1a1f30;
+    border-left: 3px solid var(--orange);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.84rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--orange); }
+
+  /* FSA comparison */
+  .compare {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .compare-box {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .compare-box h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; }
+  .compare-box ul { list-style: none; font-size: 0.82rem; color: var(--muted); line-height: 1.9; }
+  .compare-box ul li::before { content: '→ '; color: var(--accent); }
+  .compare-box.nok { border-color: #3d2a2a; }
+  .compare-box.nok h3 { color: var(--red); }
+  .compare-box.nok ul li::before { color: var(--red); content: '✗ '; }
+  .compare-box.ok h3 { color: var(--green); }
+  .compare-box.ok ul li::before { color: var(--green); content: '✓ '; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>BNF — <span>Basis HTML</span></h1>
+    <p>Een grammatica die beschrijft welke HTML-documenten geldig zijn</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot" style="background:var(--accent)"></div> non-terminal &lt;...&gt;</div>
+    <div class="legend-item"><div class="dot" style="background:var(--green)"></div> terminal "..."</div>
+    <div class="legend-item"><div class="dot" style="background:var(--purple)"></div> lege string ε</div>
+    <div class="legend-item"><div class="dot" style="background:var(--orange)"></div> recursieve regel (nesting)</div>
+  </div>
+
+  <!-- Document structuur -->
+  <div class="section-label">Document</div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;document&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="nt">&lt;html-el&gt;</span></div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;html-el&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt">
+        <span class="t">"&lt;html&gt;"</span>
+        <span class="nt">&lt;head-el&gt;</span>
+        <span class="nt">&lt;body-el&gt;</span>
+        <span class="t">"&lt;/html&gt;"</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;head-el&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt">
+        <span class="t">"&lt;head&gt;"</span>
+        <span class="nt">&lt;title-el&gt;</span>
+        <span class="t">"&lt;/head&gt;"</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;title-el&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt">
+        <span class="t">"&lt;title&gt;"</span>
+        <span class="nt">&lt;tekst&gt;</span>
+        <span class="t">"&lt;/title&gt;"</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;body-el&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt">
+        <span class="t">"&lt;body&gt;"</span>
+        <span class="nt">&lt;inhoud&gt;</span>
+        <span class="t">"&lt;/body&gt;"</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inhoud / nesting -->
+  <div class="section-label">Inhoud &amp; nesting</div>
+
+  <div class="rule nesting">
+    <span class="nt-lhs">&lt;inhoud&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="nt">&lt;element&gt;</span> <span class="nt">&lt;inhoud&gt;</span></div>
+      <div class="alt"><span class="eps">ε</span></div>
+      <div class="note">recursief: inhoud = nul of meer elementen achter elkaar</div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;element&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="nt">&lt;div-el&gt;</span></div>
+      <div class="alt"><span class="nt">&lt;p-el&gt;</span></div>
+      <div class="alt"><span class="nt">&lt;h-el&gt;</span></div>
+      <div class="alt"><span class="nt">&lt;lijst&gt;</span></div>
+      <div class="alt"><span class="nt">&lt;tekst&gt;</span></div>
+    </div>
+  </div>
+
+  <div class="rule nesting">
+    <span class="nt-lhs">&lt;div-el&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt">
+        <span class="t">"&lt;div&gt;"</span>
+        <span class="nt">&lt;inhoud&gt;</span>
+        <span class="t">"&lt;/div&gt;"</span>
+      </div>
+      <div class="note">inhoud verwijst terug → nesting werkt voor elke diepte</div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;p-el&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt">
+        <span class="t">"&lt;p&gt;"</span>
+        <span class="nt">&lt;inline&gt;</span>
+        <span class="t">"&lt;/p&gt;"</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;h-el&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="t">"&lt;h1&gt;"</span> <span class="nt">&lt;inline&gt;</span> <span class="t">"&lt;/h1&gt;"</span></div>
+      <div class="alt"><span class="t">"&lt;h2&gt;"</span> <span class="nt">&lt;inline&gt;</span> <span class="t">"&lt;/h2&gt;"</span></div>
+      <div class="alt"><span class="t">"&lt;h3&gt;"</span> <span class="nt">&lt;inline&gt;</span> <span class="t">"&lt;/h3&gt;"</span></div>
+    </div>
+  </div>
+
+  <!-- Lijsten -->
+  <div class="section-label">Lijsten</div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;lijst&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="t">"&lt;ul&gt;"</span> <span class="nt">&lt;items&gt;</span> <span class="t">"&lt;/ul&gt;"</span></div>
+      <div class="alt"><span class="t">"&lt;ol&gt;"</span> <span class="nt">&lt;items&gt;</span> <span class="t">"&lt;/ol&gt;"</span></div>
+    </div>
+  </div>
+
+  <div class="rule nesting">
+    <span class="nt-lhs">&lt;items&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="t">"&lt;li&gt;"</span> <span class="nt">&lt;inline&gt;</span> <span class="t">"&lt;/li&gt;"</span> <span class="nt">&lt;items&gt;</span></div>
+      <div class="alt"><span class="eps">ε</span></div>
+      <div class="note">recursief: nul of meer li-elementen</div>
+    </div>
+  </div>
+
+  <!-- Inline -->
+  <div class="section-label">Inline inhoud</div>
+
+  <div class="rule nesting">
+    <span class="nt-lhs">&lt;inline&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="nt">&lt;tekst&gt;</span> <span class="nt">&lt;inline&gt;</span></div>
+      <div class="alt"><span class="t">"&lt;a&gt;"</span> <span class="nt">&lt;tekst&gt;</span> <span class="t">"&lt;/a&gt;"</span> <span class="nt">&lt;inline&gt;</span></div>
+      <div class="alt"><span class="t">"&lt;strong&gt;"</span> <span class="nt">&lt;tekst&gt;</span> <span class="t">"&lt;/strong&gt;"</span> <span class="nt">&lt;inline&gt;</span></div>
+      <div class="alt"><span class="eps">ε</span></div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="nt-lhs">&lt;tekst&gt;</span>
+    <span class="arrow">::=</span>
+    <div class="rhs">
+      <div class="alt"><span class="dots">… willekeurige tekenreeks (geen tags) …</span></div>
+    </div>
+  </div>
+
+  <!-- Afleidingsvoorbeeld -->
+  <div class="example-block">
+    <h2>Afleiding <span>— hoe de grammatica een geldig document genereert</span></h2>
+    <div class="derivation">
+      <div class="step"><span class="stepnum">1</span><span><span class="replaced">&lt;document&gt;</span></span></div>
+      <div class="step"><span class="stepnum">2</span><span><span class="t">&lt;html&gt;</span> <span class="replaced">&lt;head-el&gt;</span> <span class="nt">&lt;body-el&gt;</span> <span class="t">&lt;/html&gt;</span></span></div>
+      <div class="step"><span class="stepnum">3</span><span><span class="t">&lt;html&gt;&lt;head&gt;</span><span class="replaced">&lt;title-el&gt;</span><span class="t">&lt;/head&gt;</span> <span class="nt">&lt;body-el&gt;</span> <span class="t">&lt;/html&gt;</span></span></div>
+      <div class="step"><span class="stepnum">4</span><span><span class="t">&lt;html&gt;&lt;head&gt;&lt;title&gt;</span><span class="replaced">&lt;tekst&gt;</span><span class="t">&lt;/title&gt;&lt;/head&gt;</span> <span class="nt">&lt;body-el&gt;</span> <span class="t">&lt;/html&gt;</span></span></div>
+      <div class="step"><span class="stepnum">5</span><span><span class="t">&lt;html&gt;&lt;head&gt;&lt;title&gt;</span><span class="t">"Mijn pagina"</span><span class="t">&lt;/title&gt;&lt;/head&gt;</span> <span class="replaced">&lt;body-el&gt;</span> <span class="t">&lt;/html&gt;</span></span></div>
+      <div class="step"><span class="stepnum">6</span><span><span class="t">…&lt;body&gt;</span><span class="replaced">&lt;inhoud&gt;</span><span class="t">&lt;/body&gt;&lt;/html&gt;</span></span></div>
+      <div class="step"><span class="stepnum">7</span><span><span class="t">…&lt;body&gt;</span><span class="replaced">&lt;element&gt;</span> <span class="nt">&lt;inhoud&gt;</span> <span class="t">&lt;/body&gt;</span></span></div>
+      <div class="step"><span class="stepnum">8</span><span><span class="t">…&lt;body&gt;&lt;div&gt;</span><span class="replaced">&lt;inhoud&gt;</span><span class="t">&lt;/div&gt;</span> <span class="nt">&lt;inhoud&gt;</span> <span class="t">&lt;/body&gt;</span></span></div>
+      <div class="step"><span class="stepnum">9</span><span class="result">…&lt;body&gt;&lt;div&gt;&lt;p&gt;Hallo&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</span></div>
+    </div>
+    <div class="callout">
+      <strong>Cruciaal op stap 8:</strong> &lt;div&gt; gebruikt &lt;inhoud&gt; — dezelfde non-terminal als het document zelf.
+      Daardoor kan een div een andere div bevatten, die weer een div bevat, enzovoort — <em>voor elke diepte</em>.
+      Geen enkele FSA kan dit, omdat een FSA niet bijhoudt hoeveel tags er nog openstaan.
+    </div>
+  </div>
+
+  <!-- FSA vs BNF vergelijking -->
+  <div class="compare">
+    <div class="compare-box nok">
+      <h3>FSA — kan dit niet</h3>
+      <ul>
+        <li>Tellen hoeveel tags openstaan</li>
+        <li>Controleren of sluitag bij openingstag hoort</li>
+        <li>Nesting op willekeurige diepte</li>
+        <li>Onthouden wat er eerder stond</li>
+      </ul>
+    </div>
+    <div class="compare-box ok">
+      <h3>BNF — kan dit wel</h3>
+      <ul>
+        <li>Recursieve regels → nesting ingebakken</li>
+        <li>Structuur afdwingen (&lt;/div&gt; hoort bij &lt;div&gt;)</li>
+        <li>Elke gewenste diepte beschrijven</li>
+        <li>Taal van HTML, code, JSON precies vastleggen</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
