@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PO Webdesign &mdash; 4 havo Informatica</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.7;
+    padding: 20px;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+
+  header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    padding: 36px 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  header h1 { font-size: 2em; margin-bottom: 4px; }
+  header .sub { opacity: 0.85; font-size: 1.1em; }
+  header .badges {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  header .badge {
+    background: rgba(255,255,255,0.12);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 0.88em;
+  }
+
+  /* Navigation */
+  nav.toc {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  nav.toc h2 { font-size: 1.15em; color: #0f3460; margin-bottom: 10px; }
+  nav.toc ol { padding-left: 22px; }
+  nav.toc li { margin-bottom: 4px; }
+  nav.toc a { color: #1a5276; text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+
+  /* Sections */
+  .section {
+    background: white;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-left: 4px solid #0f3460;
+  }
+  .section h2 {
+    color: #0f3460;
+    font-size: 1.3em;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8eaf0;
+  }
+  .section h3 {
+    color: #16213e;
+    font-size: 1.08em;
+    margin: 18px 0 8px;
+  }
+  .section p { margin-bottom: 10px; }
+  .section ul, .section ol { padding-left: 24px; margin-bottom: 12px; }
+  .section li { margin-bottom: 5px; }
+
+  /* Highlights */
+  .highlight {
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .highlight.warn {
+    background: #fff3e0;
+    border-color: #ffb74d;
+  }
+  .highlight.success {
+    background: #e8f5e9;
+    border-color: #81c784;
+  }
+  .highlight strong { color: #0f3460; }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+    padding-left: 0;
+  }
+  .checklist li {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .checklist li:hover { background: #eef2f7; }
+  .checklist input[type="checkbox"] {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: #0f3460;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .checklist label { cursor: pointer; flex: 1; }
+
+  /* Rubric table */
+  table.rubric {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.92em;
+  }
+  table.rubric th, table.rubric td {
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  table.rubric th {
+    background: #0f3460;
+    color: white;
+    font-weight: 600;
+  }
+  table.rubric tr:nth-child(even) { background: #f5f7fa; }
+  table.rubric .pts {
+    text-align: center;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  .total-row td {
+    background: #e3f2fd !important;
+    font-weight: bold;
+    font-size: 1.05em;
+  }
+
+  /* Steps */
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .step-num {
+    background: #0f3460;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1em;
+    flex-shrink: 0;
+  }
+  .step-content { flex: 1; }
+  .step-content strong { color: #0f3460; }
+
+  /* Timeline */
+  .timeline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 16px 0;
+  }
+  .timeline-item {
+    flex: 1;
+    min-width: 140px;
+    padding: 14px;
+    text-align: center;
+    position: relative;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+  }
+  .timeline-item:first-child { border-radius: 8px 0 0 8px; }
+  .timeline-item:last-child { border-radius: 0 8px 8px 0; }
+  .timeline-item .week {
+    font-weight: bold;
+    color: #0f3460;
+    font-size: 0.95em;
+  }
+  .timeline-item .task {
+    font-size: 0.85em;
+    margin-top: 4px;
+    color: #555;
+  }
+  .timeline-item.active {
+    background: #e3f2fd;
+    border-color: #0f3460;
+  }
+
+  code {
+    font-family: 'Courier New', monospace;
+    background: #263238;
+    color: #e0e0e0;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px 0 8px;
+    color: #888;
+    font-size: 0.85em;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 10px; }
+    header { padding: 22px 16px; }
+    header h1 { font-size: 1.5em; }
+    .section { padding: 18px; }
+    .timeline { flex-direction: column; }
+    .timeline-item:first-child { border-radius: 8px 8px 0 0; }
+    .timeline-item:last-child { border-radius: 0 0 8px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>Praktische Opdracht: Webdesign</h1>
+  <p class="sub">4 havo Informatica &mdash; 2025/2026</p>
+  <div class="badges">
+    <span class="badge">Individueel</span>
+    <span class="badge">HTML &amp; CSS</span>
+    <span class="badge">Ontwerp + Implementatie</span>
+  </div>
+</header>
+
+<!-- INHOUDSOPGAVE -->
+<nav class="toc">
+  <h2>Inhoudsopgave</h2>
+  <ol>
+    <li><a href="#intro">Inleiding</a></li>
+    <li><a href="#ontwerp">Deel 1 &mdash; Ontwerp</a></li>
+    <li><a href="#implementatie">Deel 2 &mdash; Implementatie</a></li>
+    <li><a href="#eisen">Technische eisen</a></li>
+    <li><a href="#planning">Planning</a></li>
+    <li><a href="#inlevering">Inlevering</a></li>
+    <li><a href="#beoordeling">Beoordeling</a></li>
+    <li><a href="#checklist">Checklist</a></li>
+  </ol>
+</nav>
+
+<!-- INLEIDING -->
+<div class="section" id="intro">
+  <h2>Inleiding</h2>
+  <p>Bij deze praktische opdracht ontwerp en bouw je een complete website over een zelfgekozen onderwerp. Je doorloopt het hele proces: van ontwerp tot werkende site. Je laat zien dat je HTML en CSS beheerst en dat je kunt nadenken over gebruiksvriendelijkheid en vormgeving.</p>
+  <div class="highlight">
+    <strong>Kies een onderwerp dat je interesseert!</strong> Denk aan: een sport, hobby, muziekgroep, game, reisbestemming, dier, historisch onderwerp, etc. Zorg dat je er genoeg over kunt schrijven voor meerdere pagina's.
+  </div>
+</div>
+
+<!-- DEEL 1: ONTWERP -->
+<div class="section" id="ontwerp">
+  <h2>Deel 1 &mdash; Ontwerp</h2>
+  <p>Maak een functioneel ontwerp (verslag) van je website met de volgende onderdelen:</p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <strong>Voorkant</strong>
+      <p>Een nette titelpagina met: titel van je website, je naam, klas, datum en het vak.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <strong>Inhoudsopgave</strong>
+      <p>Een overzicht van alle onderdelen van je verslag met paginanummers.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <strong>Doelen en doelgroep</strong>
+      <p>Beschrijf het doel van je website (informeren, entertainen, overtuigen?) en voor wie de site bedoeld is. Hoe be&iuml;nvloedt dit je ontwerpkeuzes?</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <strong>Sitemap</strong>
+      <p>Een visueel overzicht (boomstructuur) van alle pagina's en hoe ze met elkaar verbonden zijn.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <strong>Basiselementen</strong>
+      <p>Beschrijf je ontwerpkeuzes:</p>
+      <ul>
+        <li><strong>Kleuren</strong> &mdash; welke kleuren gebruik je en waarom? (noem de kleurcodes)</li>
+        <li><strong>Lettertypen</strong> &mdash; welke fonts kies je voor titels en lopende tekst?</li>
+        <li><strong>Stijl/sfeer</strong> &mdash; wat is de look &amp; feel van je site?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-content">
+      <strong>Wireframes</strong>
+      <p>Maak wireframes (schematische schetsen) van minstens 2 verschillende pagina's. Laat zien waar de navigatie, tekst, afbeeldingen en andere elementen komen. Dit mag met de hand getekend of digitaal.</p>
+      <p style="margin-top:8px;"><strong>Voorbeeld wireframe:</strong></p>
+      <svg viewBox="0 0 600 440" style="max-width:560px;width:100%;display:block;margin:10px 0;background:#fff;border:2px solid #ccc;border-radius:8px;">
+        <!-- Header -->
+        <rect x="20" y="15" width="560" height="60" rx="4" fill="#d5dbe3" stroke="#999" stroke-width="1.5"/>
+        <rect x="35" y="30" width="120" height="16" rx="2" fill="#8a9bb5"/>
+        <text x="95" y="42" text-anchor="middle" font-size="9" fill="white" font-weight="bold">LOGO</text>
+        <rect x="340" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+        <rect x="400" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+        <rect x="460" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+        <rect x="520" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+        <text x="365" y="41" text-anchor="middle" font-size="7" fill="white">Home</text>
+        <text x="425" y="41" text-anchor="middle" font-size="7" fill="white">Over</text>
+        <text x="485" y="41" text-anchor="middle" font-size="7" fill="white">Foto's</text>
+        <text x="545" y="41" text-anchor="middle" font-size="7" fill="white">Contact</text>
+        <!-- Label -->
+        <text x="305" y="32" text-anchor="middle" font-size="9" fill="#666" font-style="italic">navigatie</text>
+
+        <!-- Hero -->
+        <rect x="20" y="85" width="560" height="90" rx="4" fill="#e8edf3" stroke="#999" stroke-width="1" stroke-dasharray="5,3"/>
+        <text x="300" y="125" text-anchor="middle" font-size="13" fill="#666">Hero-afbeelding</text>
+        <rect x="210" y="140" width="180" height="20" rx="3" fill="#8a9bb5"/>
+        <text x="300" y="154" text-anchor="middle" font-size="9" fill="white">Titel van de website</text>
+
+        <!-- Content area -->
+        <rect x="20" y="190" width="360" height="150" rx="4" fill="#f4f6f8" stroke="#999" stroke-width="1"/>
+        <rect x="35" y="205" width="180" height="12" rx="2" fill="#b0bec5"/>
+        <rect x="35" y="225" width="330" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="35" y="240" width="310" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="35" y="255" width="320" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="35" y="270" width="280" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="35" y="290" width="330" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="35" y="305" width="300" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="35" y="320" width="250" height="8" rx="2" fill="#cfd8dc"/>
+        <text x="200" y="202" text-anchor="middle" font-size="9" fill="#666" font-style="italic">tekst + kopjes</text>
+
+        <!-- Sidebar -->
+        <rect x="395" y="190" width="185" height="150" rx="4" fill="#f4f6f8" stroke="#999" stroke-width="1"/>
+        <rect x="410" y="205" width="155" height="70" rx="3" fill="#e8edf3" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
+        <text x="487" y="244" text-anchor="middle" font-size="10" fill="#888">afbeelding</text>
+        <rect x="410" y="285" width="155" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="410" y="300" width="130" height="8" rx="2" fill="#cfd8dc"/>
+        <rect x="410" y="315" width="140" height="8" rx="2" fill="#cfd8dc"/>
+        <text x="487" y="202" text-anchor="middle" font-size="9" fill="#666" font-style="italic">sidebar</text>
+
+        <!-- Footer -->
+        <rect x="20" y="360" width="560" height="55" rx="4" fill="#d5dbe3" stroke="#999" stroke-width="1.5"/>
+        <rect x="35" y="375" width="200" height="8" rx="2" fill="#a0aec0"/>
+        <rect x="35" y="390" width="140" height="8" rx="2" fill="#a0aec0"/>
+        <rect x="450" y="375" width="120" height="25" rx="3" fill="#8a9bb5"/>
+        <text x="510" y="392" text-anchor="middle" font-size="8" fill="white">Contact</text>
+        <text x="300" y="372" text-anchor="middle" font-size="9" fill="#666" font-style="italic">footer</text>
+
+        <!-- Annotations -->
+        <line x1="588" y1="15" x2="600" y2="15" stroke="#c0392b" stroke-width="1"/>
+        <line x1="600" y1="15" x2="600" y2="75" stroke="#c0392b" stroke-width="1"/>
+        <line x1="588" y1="75" x2="600" y2="75" stroke="#c0392b" stroke-width="1"/>
+
+        <line x1="588" y1="190" x2="600" y2="190" stroke="#c0392b" stroke-width="1"/>
+        <line x1="600" y1="190" x2="600" y2="340" stroke="#c0392b" stroke-width="1"/>
+        <line x1="588" y1="340" x2="600" y2="340" stroke="#c0392b" stroke-width="1"/>
+      </svg>
+      <p style="font-size:0.9em;color:#666;margin-top:4px;">Een wireframe hoeft niet mooi te zijn &mdash; het gaat om de <strong>indeling</strong>. Schets waar elk element komt: header, navigatie, tekst, afbeeldingen, sidebar, footer. Gebruik grijze vlakken en lijnen.</p>
+    </div>
+  </div>
+
+  <div class="highlight success">
+    <strong>Tip:</strong> Kijk of je ontwerp gebruiksvriendelijk is. Stel jezelf deze vragen: Is de navigatie duidelijk? Ziet elke pagina er consistent uit? Kan een bezoeker makkelijk vinden wat hij zoekt? Is de tekst goed leesbaar? Leg je ontwerp eventueel voor aan een klasgenoot voor feedback.
+  </div>
+
+  <div class="highlight warn">
+    <strong>Belangrijk &mdash; sla je werk veilig op!</strong> Bewaar je bestanden op meerdere plekken: op je laptop, in Google Drive en eventueel op een USB-stick. "Mijn laptop is gecrasht" of "ik ben mijn bestanden kwijt" is g&eacute;&eacute;n geldige reden voor te laat inleveren. Maak regelmatig een back-up!
+  </div>
+</div>
+
+<!-- DEEL 2: IMPLEMENTATIE -->
+<div class="section" id="implementatie">
+  <h2>Deel 2 &mdash; Implementatie</h2>
+  <p>Bouw je website op basis van je ontwerp. Gebruik alleen HTML en CSS.</p>
+
+  <h3>Bestanden</h3>
+  <ul>
+    <li>De hoofdpagina heet altijd <code>index.html</code></li>
+    <li>De CSS-pagina heet <code>index.css</code></li>
+    <li>Afbeeldingen en andere bestanden staan in logische mappen</li>
+  </ul>
+
+  <h3>Verplichte elementen op je website</h3>
+  <ul>
+    <li>Minstens <strong>3 pagina's</strong> die aan elkaar gelinkt zijn</li>
+    <li>Een <strong>tabel</strong> (met zinvolle inhoud)</li>
+    <li>Een <strong>lijst</strong> (ordered of unordered)</li>
+    <li>Een <strong>afbeelding als link</strong> (klikbare afbeelding)</li>
+    <li><strong>Passende afbeeldingen</strong> die goed bij het onderwerp passen</li>
+    <li><strong>Goede kleurencombinatie</strong> &mdash; kleuren die bij elkaar passen &eacute;n leesbare tekst</li>
+    <li><strong>Passende lettertypen</strong></li>
+  </ul>
+
+  <div class="highlight warn">
+    <strong>Niet toegestaan:</strong>
+    <ul style="margin-bottom:0;">
+      <li>Externe libraries of frameworks (geen Bootstrap, Tailwind, etc.)</li>
+      <li>Software waarmee een webpagina gegenereerd wordt (geen Wix, WordPress, etc.)</li>
+      <li>Code rechtstreeks kopi&euml;ren &mdash; je mag voorbeelden opzoeken, maar schrijf de code zelf en vermeld je bronnen in commentaarregels of in je verslag</li>
+      <li>Je moet <strong>altijd kunnen uitleggen</strong> wat je code doet</li>
+    </ul>
+  </div>
+</div>
+
+<!-- TECHNISCHE EISEN -->
+<div class="section" id="eisen">
+  <h2>Technische eisen</h2>
+  <p>Je website moet aan de volgende technische eisen voldoen:</p>
+
+  <h3>HTML</h3>
+  <ul>
+    <li>Correcte HTML5-structuur (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code>)</li>
+    <li>Gebruik van semantische elementen (<code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>)</li>
+    <li>Goede nesting en inspringing van je code</li>
+    <li>Alt-teksten bij afbeeldingen</li>
+  </ul>
+
+  <h3>CSS</h3>
+  <ul>
+    <li>Alle opmaak via een <strong>extern CSS-bestand</strong> (<code>index.css</code>)</li>
+    <li>Geen inline styling (geen <code>style="..."</code> in je HTML)</li>
+    <li>Gebruik van passende selectors (element, class, id)</li>
+    <li>Nette, leesbare CSS met logische groepering</li>
+  </ul>
+</div>
+
+<!-- PLANNING -->
+<div class="section" id="planning">
+  <h2>Planning</h2>
+  <p>Verdeel je werk over de beschikbare weken:</p>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="week">Week 1</div>
+      <div class="task">Onderwerp kiezen, doelen &amp; doelgroep beschrijven</div>
+    </div>
+    <div class="timeline-item">
+      <div class="week">Week 2</div>
+      <div class="task">Sitemap, basiselementen, wireframes maken</div>
+    </div>
+    <div class="timeline-item">
+      <div class="week">Week 3</div>
+      <div class="task">HTML-structuur bouwen, pagina's aanmaken</div>
+    </div>
+    <div class="timeline-item">
+      <div class="week">Week 4</div>
+      <div class="task">CSS-opmaak, afbeeldingen, afwerking</div>
+    </div>
+    <div class="timeline-item">
+      <div class="week">Week 5</div>
+      <div class="task">Testen, feedback, verslag afronden, inleveren</div>
+    </div>
+  </div>
+</div>
+
+<!-- INLEVERING -->
+<div class="section" id="inlevering">
+  <h2>Inlevering</h2>
+  <p>Je levert uiterlijk op de inleverdatum het volgende in via <strong>Google Classroom</strong>:</p>
+  <ol>
+    <li>Je <strong>verslag</strong> met het functioneel ontwerp (PDF of Word)</li>
+    <li>Alle <strong>websitebestanden</strong> (HTML, CSS, afbeeldingen, etc.)</li>
+  </ol>
+  <div class="highlight">
+    <strong>Hoe inleveren:</strong> Pak alle bestanden in als een <strong>.zip</strong>-bestand. Noem het bestand: <code>voornaam-achternaam-po-webdesign.zip</code>. Lever dit ingepakte bestand in via Google Classroom.
+  </div>
+</div>
+
+<!-- BEOORDELING -->
+<div class="section" id="beoordeling">
+  <h2>Beoordeling</h2>
+  <p>Je werk wordt beoordeeld op de volgende onderdelen:</p>
+
+  <table class="rubric">
+    <tr>
+      <th>Onderdeel</th>
+      <th>Omschrijving</th>
+      <th class="pts">Punten</th>
+    </tr>
+    <tr>
+      <td><strong>Verslag: voorkant &amp; inhoudsopgave</strong></td>
+      <td>Nette voorkant met alle gegevens, duidelijke inhoudsopgave</td>
+      <td class="pts">5</td>
+    </tr>
+    <tr>
+      <td><strong>Verslag: doelen &amp; doelgroep</strong></td>
+      <td>Helder beschreven doel en doelgroep, keuzes onderbouwd</td>
+      <td class="pts">5</td>
+    </tr>
+    <tr>
+      <td><strong>Verslag: sitemap &amp; wireframes</strong></td>
+      <td>Duidelijke sitemap, wireframes van minstens 2 pagina's</td>
+      <td class="pts">10</td>
+    </tr>
+    <tr>
+      <td><strong>Verslag: basiselementen</strong></td>
+      <td>Kleuren, lettertypen en stijl beschreven en onderbouwd</td>
+      <td class="pts">5</td>
+    </tr>
+    <tr>
+      <td><strong>HTML: structuur &amp; semantiek</strong></td>
+      <td>Correcte HTML5, semantische elementen, nette code</td>
+      <td class="pts">15</td>
+    </tr>
+    <tr>
+      <td><strong>HTML: verplichte elementen</strong></td>
+      <td>Tabel, lijst, afbeelding-als-link, passende afbeeldingen aanwezig</td>
+      <td class="pts">10</td>
+    </tr>
+    <tr>
+      <td><strong>CSS: opmaak &amp; design</strong></td>
+      <td>Extern CSS-bestand, passende kleuren/fonts, leesbare tekst, consistent</td>
+      <td class="pts">15</td>
+    </tr>
+    <tr>
+      <td><strong>CSS: selectors &amp; technieken</strong></td>
+      <td>Juist gebruik van selectors (element, class, id), nette CSS-code</td>
+      <td class="pts">10</td>
+    </tr>
+    <tr>
+      <td><strong>Usability &amp; afwerking</strong></td>
+      <td>Navigatie werkt, site is gebruiksvriendelijk, afgewerkt geheel</td>
+      <td class="pts">15</td>
+    </tr>
+    <tr>
+      <td><strong>Bronvermelding</strong></td>
+      <td>Bronnen van afbeeldingen en code-voorbeelden vermeld</td>
+      <td class="pts">10</td>
+    </tr>
+    <tr class="total-row">
+      <td colspan="2">Totaal</td>
+      <td class="pts">100</td>
+    </tr>
+  </table>
+</div>
+
+<!-- CHECKLIST -->
+<div class="section" id="checklist">
+  <h2>Checklist</h2>
+  <p>Gebruik deze checklist om te controleren of je alles hebt:</p>
+
+  <h3>Verslag</h3>
+  <ul class="checklist">
+    <li><input type="checkbox" id="c1"><label for="c1">Nette voorkant met naam, klas, datum, vak en titel</label></li>
+    <li><input type="checkbox" id="c2"><label for="c2">Inhoudsopgave met paginanummers</label></li>
+    <li><input type="checkbox" id="c3"><label for="c3">Doelen en doelgroep beschreven</label></li>
+    <li><input type="checkbox" id="c4"><label for="c4">Sitemap (boomstructuur)</label></li>
+    <li><input type="checkbox" id="c5"><label for="c5">Basiselementen: kleuren, lettertypen, stijl</label></li>
+    <li><input type="checkbox" id="c6"><label for="c6">Wireframes van minstens 2 pagina's</label></li>
+  </ul>
+
+  <h3>Website</h3>
+  <ul class="checklist">
+    <li><input type="checkbox" id="c7"><label for="c7">Hoofdpagina heet <code>index.html</code></label></li>
+    <li><input type="checkbox" id="c8"><label for="c8">CSS in apart bestand <code>index.css</code></label></li>
+    <li><input type="checkbox" id="c9"><label for="c9">Minstens 3 pagina's die aan elkaar gelinkt zijn</label></li>
+    <li><input type="checkbox" id="c10"><label for="c10">Een tabel met zinvolle inhoud</label></li>
+    <li><input type="checkbox" id="c11"><label for="c11">Een lijst (ol of ul)</label></li>
+    <li><input type="checkbox" id="c12"><label for="c12">Een afbeelding als link</label></li>
+    <li><input type="checkbox" id="c13"><label for="c13">Passende afbeeldingen bij het onderwerp</label></li>
+    <li><input type="checkbox" id="c14"><label for="c14">Goede kleurencombinatie, leesbare tekst</label></li>
+    <li><input type="checkbox" id="c15"><label for="c15">Geen inline styling, geen libraries</label></li>
+    <li><input type="checkbox" id="c16"><label for="c16">Bronvermelding in verslag of commentaarregels</label></li>
+  </ul>
+
+  <h3>Inlevering</h3>
+  <ul class="checklist">
+    <li><input type="checkbox" id="c17"><label for="c17">Verslag als PDF of Word</label></li>
+    <li><input type="checkbox" id="c18"><label for="c18">Alle bestanden ingepakt als .zip</label></li>
+    <li><input type="checkbox" id="c19"><label for="c19">Zipbestand heet <code>voornaam-achternaam-po-webdesign.zip</code></label></li>
+    <li><input type="checkbox" id="c20"><label for="c20">Ingeleverd via Google Classroom voor de deadline</label></li>
+  </ul>
+</div>
+
+<footer>
+  PO Webdesign &mdash; 4 havo Informatica &mdash; 2025/2026 &mdash; Minkema College
+</footer>
+
+</div>
+
+<script>
+// Bewaar checkboxen in localStorage
+document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
+  const key = 'po_webdesign_' + cb.id;
+  cb.checked = localStorage.getItem(key) === 'true';
+  cb.addEventListener('change', () => localStorage.setItem(key, cb.checked));
+});
+</script>
+</body>
+</html>
