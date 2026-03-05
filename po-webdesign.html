@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PO Webdesign &mdash; 4 havo Informatica</title>
+<title>PO Webdesign &mdash; 4 H/V Informatica</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -39,7 +39,6 @@
     font-size: 0.88em;
   }
 
-  /* Navigation */
   nav.toc {
     background: white;
     border-radius: 12px;
@@ -53,7 +52,6 @@
   nav.toc a { color: #1a5276; text-decoration: none; }
   nav.toc a:hover { text-decoration: underline; }
 
-  /* Sections */
   .section {
     background: white;
     border-radius: 12px;
@@ -78,7 +76,6 @@
   .section ul, .section ol { padding-left: 24px; margin-bottom: 12px; }
   .section li { margin-bottom: 5px; }
 
-  /* Highlights */
   .highlight {
     background: #e3f2fd;
     border: 1px solid #90caf9;
@@ -94,9 +91,12 @@
     background: #e8f5e9;
     border-color: #81c784;
   }
+  .highlight.danger {
+    background: #ffebee;
+    border-color: #ef9a9a;
+  }
   .highlight strong { color: #0f3460; }
 
-  /* Checklist */
   .checklist {
     list-style: none;
     padding-left: 0;
@@ -124,7 +124,6 @@
   }
   .checklist label { cursor: pointer; flex: 1; }
 
-  /* Rubric table */
   table.rubric {
     width: 100%;
     border-collapse: collapse;
@@ -153,7 +152,20 @@
     font-size: 1.05em;
   }
 
-  /* Steps */
+  table.scores {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.9em;
+  }
+  table.scores th, table.scores td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  table.scores th { background: #0f3460; color: white; }
+  table.scores tr:nth-child(even) { background: #f5f7fa; }
+
   .step {
     display: flex;
     gap: 16px;
@@ -176,7 +188,6 @@
   .step-content { flex: 1; }
   .step-content strong { color: #0f3460; }
 
-  /* Timeline */
   .timeline {
     display: flex;
     flex-wrap: wrap;
@@ -185,10 +196,9 @@
   }
   .timeline-item {
     flex: 1;
-    min-width: 140px;
-    padding: 14px;
+    min-width: 120px;
+    padding: 14px 10px;
     text-align: center;
-    position: relative;
     background: #f8f9fa;
     border: 1px solid #ddd;
   }
@@ -200,13 +210,23 @@
     font-size: 0.95em;
   }
   .timeline-item .task {
-    font-size: 0.85em;
+    font-size: 0.82em;
     margin-top: 4px;
     color: #555;
   }
-  .timeline-item.active {
-    background: #e3f2fd;
-    border-color: #0f3460;
+
+  .idea-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .idea-card {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.92em;
   }
 
   code {
@@ -233,6 +253,7 @@
     .timeline { flex-direction: column; }
     .timeline-item:first-child { border-radius: 8px 8px 0 0; }
     .timeline-item:last-child { border-radius: 0 0 8px 8px; }
+    .idea-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -241,11 +262,11 @@
 
 <header>
   <h1>Praktische Opdracht: Webdesign</h1>
-  <p class="sub">4 havo Informatica &mdash; 2025/2026</p>
+  <p class="sub">4 H/V Informatica &mdash; 2025/2026</p>
   <div class="badges">
-    <span class="badge">Individueel</span>
+    <span class="badge">In tweetallen</span>
     <span class="badge">HTML &amp; CSS</span>
-    <span class="badge">Ontwerp + Implementatie</span>
+    <span class="badge">Ontwerp + Bouw + Test + Reflectie</span>
   </div>
 </header>
 
@@ -253,12 +274,13 @@
 <nav class="toc">
   <h2>Inhoudsopgave</h2>
   <ol>
-    <li><a href="#intro">Inleiding</a></li>
-    <li><a href="#ontwerp">Deel 1 &mdash; Ontwerp</a></li>
-    <li><a href="#implementatie">Deel 2 &mdash; Implementatie</a></li>
-    <li><a href="#eisen">Technische eisen</a></li>
-    <li><a href="#planning">Planning</a></li>
+    <li><a href="#intro">Inleiding &amp; onderwerp</a></li>
+    <li><a href="#ontwerp">Ontwerp</a></li>
+    <li><a href="#website">Website bouwen</a></li>
+    <li><a href="#tests">Gebruikerstests</a></li>
+    <li><a href="#reflectie">Reflectieverslag</a></li>
     <li><a href="#inlevering">Inlevering</a></li>
+    <li><a href="#planning">Planning</a></li>
     <li><a href="#beoordeling">Beoordeling</a></li>
     <li><a href="#checklist">Checklist</a></li>
   </ol>
@@ -266,196 +288,190 @@
 
 <!-- INLEIDING -->
 <div class="section" id="intro">
-  <h2>Inleiding</h2>
-  <p>Bij deze praktische opdracht ontwerp en bouw je een complete website over een zelfgekozen onderwerp. Je doorloopt het hele proces: van ontwerp tot werkende site. Je laat zien dat je HTML en CSS beheerst en dat je kunt nadenken over gebruiksvriendelijkheid en vormgeving.</p>
-  <div class="highlight">
-    <strong>Kies een onderwerp dat je interesseert!</strong> Denk aan: een sport, hobby, muziekgroep, game, reisbestemming, dier, historisch onderwerp, etc. Zorg dat je er genoeg over kunt schrijven voor meerdere pagina's.
+  <h2>Inleiding &amp; onderwerp</h2>
+  <p>Bij deze PO ga je <strong>samen met een andere leerling</strong> een eigen website ontwerpen en bouwen. Het onderwerp mag je vrij kiezen (met toestemming van de docent). Denk bijvoorbeeld aan:</p>
+
+  <div class="idea-grid">
+    <div class="idea-card">Een website over jullie favoriete <strong>hobby</strong></div>
+    <div class="idea-card">Een <strong>webshop</strong> met jullie favoriete producten</div>
+    <div class="idea-card">Een gids voor een <strong>vakantiebestemming</strong></div>
+    <div class="idea-card">Een <strong>fanpage</strong> voor een artiest, sportclub of serie</div>
+    <div class="idea-card">Een website voor een <strong>restaurant</strong> met menu en reserveringen</div>
+    <div class="idea-card">Een site met <strong>tutorials</strong> voor een vak of interesse</div>
+    <div class="idea-card">Een <strong>nieuwssite</strong> met verschillende artikelen</div>
+    <div class="idea-card">Een <strong>bewustmakingscampagne</strong> voor een belangrijk probleem</div>
+    <div class="idea-card">Een <strong>landing page</strong> voor een niet-bestaand product of uitvinding</div>
+    <div class="idea-card">Een soort <strong>Wikipedia</strong> voor een specifiek thema</div>
+    <div class="idea-card">Een website die uit een <strong>fictieve wereld</strong> lijkt te komen</div>
+  </div>
+
+  <div class="highlight warn">
+    <strong>Belangrijk &mdash; sla je werk veilig op!</strong> Maak <strong>elke les</strong> een back-up van je bestanden in Google Drive. Bewaar je werk ook op je laptop en eventueel op een USB-stick. "Mijn bestanden zijn kwijt" is g&eacute;&eacute;n geldige reden voor te laat inleveren.
   </div>
 </div>
 
-<!-- DEEL 1: ONTWERP -->
+<!-- ONTWERP -->
 <div class="section" id="ontwerp">
-  <h2>Deel 1 &mdash; Ontwerp</h2>
-  <p>Maak een functioneel ontwerp (verslag) van je website met de volgende onderdelen:</p>
+  <h2>Ontwerp</h2>
+  <p>Je begint met het maken van een ontwerp. Hiervoor vul je het werkblad <strong>"Website ontwerp"</strong> in dat je in de les krijgt. Houd hierbij rekening met wat je bij usability geleerd hebt (de vuistregels van Nielsen en het functionele ontwerp).</p>
+
+  <p>Op het werkblad verwerk je onder andere:</p>
+  <ul>
+    <li><strong>User stories</strong> &mdash; wat wil een bezoeker op jouw site kunnen doen?</li>
+    <li><strong>Sitemap</strong> &mdash; een boomstructuur van alle pagina's en hun verbindingen</li>
+    <li><strong>Wireframes</strong> &mdash; schematische schetsen van je pagina's</li>
+  </ul>
+
+  <h3>Voorbeeld wireframe</h3>
+  <svg viewBox="0 0 600 440" style="max-width:560px;width:100%;display:block;margin:10px 0;background:#fff;border:2px solid #ccc;border-radius:8px;">
+    <!-- Header -->
+    <rect x="20" y="15" width="560" height="60" rx="4" fill="#d5dbe3" stroke="#999" stroke-width="1.5"/>
+    <rect x="35" y="30" width="120" height="16" rx="2" fill="#8a9bb5"/>
+    <text x="95" y="42" text-anchor="middle" font-size="9" fill="white" font-weight="bold">LOGO</text>
+    <rect x="340" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+    <rect x="400" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+    <rect x="460" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+    <rect x="520" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
+    <text x="365" y="41" text-anchor="middle" font-size="7" fill="white">Home</text>
+    <text x="425" y="41" text-anchor="middle" font-size="7" fill="white">Over</text>
+    <text x="485" y="41" text-anchor="middle" font-size="7" fill="white">Foto's</text>
+    <text x="545" y="41" text-anchor="middle" font-size="7" fill="white">Contact</text>
+    <text x="305" y="32" text-anchor="middle" font-size="9" fill="#666" font-style="italic">navigatie</text>
+    <!-- Hero -->
+    <rect x="20" y="85" width="560" height="90" rx="4" fill="#e8edf3" stroke="#999" stroke-width="1" stroke-dasharray="5,3"/>
+    <text x="300" y="125" text-anchor="middle" font-size="13" fill="#666">Hero-afbeelding</text>
+    <rect x="210" y="140" width="180" height="20" rx="3" fill="#8a9bb5"/>
+    <text x="300" y="154" text-anchor="middle" font-size="9" fill="white">Titel van de website</text>
+    <!-- Content area -->
+    <rect x="20" y="190" width="360" height="150" rx="4" fill="#f4f6f8" stroke="#999" stroke-width="1"/>
+    <rect x="35" y="205" width="180" height="12" rx="2" fill="#b0bec5"/>
+    <rect x="35" y="225" width="330" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="35" y="240" width="310" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="35" y="255" width="320" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="35" y="270" width="280" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="35" y="290" width="330" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="35" y="305" width="300" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="35" y="320" width="250" height="8" rx="2" fill="#cfd8dc"/>
+    <text x="200" y="202" text-anchor="middle" font-size="9" fill="#666" font-style="italic">tekst + kopjes</text>
+    <!-- Sidebar -->
+    <rect x="395" y="190" width="185" height="150" rx="4" fill="#f4f6f8" stroke="#999" stroke-width="1"/>
+    <rect x="410" y="205" width="155" height="70" rx="3" fill="#e8edf3" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="487" y="244" text-anchor="middle" font-size="10" fill="#888">afbeelding</text>
+    <rect x="410" y="285" width="155" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="410" y="300" width="130" height="8" rx="2" fill="#cfd8dc"/>
+    <rect x="410" y="315" width="140" height="8" rx="2" fill="#cfd8dc"/>
+    <text x="487" y="202" text-anchor="middle" font-size="9" fill="#666" font-style="italic">sidebar</text>
+    <!-- Footer -->
+    <rect x="20" y="360" width="560" height="55" rx="4" fill="#d5dbe3" stroke="#999" stroke-width="1.5"/>
+    <rect x="35" y="375" width="200" height="8" rx="2" fill="#a0aec0"/>
+    <rect x="35" y="390" width="140" height="8" rx="2" fill="#a0aec0"/>
+    <rect x="450" y="375" width="120" height="25" rx="3" fill="#8a9bb5"/>
+    <text x="510" y="392" text-anchor="middle" font-size="8" fill="white">Contact</text>
+    <text x="300" y="372" text-anchor="middle" font-size="9" fill="#666" font-style="italic">footer</text>
+  </svg>
+  <p style="font-size:0.9em;color:#666;">Een wireframe hoeft niet mooi te zijn &mdash; het gaat om de <strong>indeling</strong>. Schets waar elk element komt: header, navigatie, tekst, afbeeldingen, sidebar, footer.</p>
+
+  <div class="highlight success">
+    <strong>Tip:</strong> Kijk of je ontwerp gebruiksvriendelijk is. Stel jezelf deze vragen: Is de navigatie duidelijk? Ziet elke pagina er consistent uit? Kan een bezoeker makkelijk vinden wat hij zoekt? Is de tekst goed leesbaar?
+  </div>
+</div>
+
+<!-- WEBSITE BOUWEN -->
+<div class="section" id="website">
+  <h2>Website bouwen</h2>
+  <p>Vervolgens ga je content zoeken en je website programmeren. Maak een aparte HTML-file voor elke pagina en &eacute;&eacute;n <code>style.css</code> voor alle opmaak.</p>
+
+  <h3>Eisen</h3>
+  <ul>
+    <li>Minstens <strong>5 pagina's</strong> (havo) of <strong>6 pagina's</strong> (vwo), waaronder een homepage</li>
+    <li>De pagina's moeten <strong>echt verschillend</strong> zijn, niet dezelfde opbouw met andere inhoud</li>
+    <li>Je mag meer pagina's toevoegen &mdash; die mogen wel op elkaar lijken</li>
+    <li>Via een <strong>menu</strong> kun je (indirect) op elke pagina komen en terug naar de homepage</li>
+    <li>Gebruik van <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code> en <code>&lt;footer&gt;</code></li>
+    <li>De <code>&lt;main&gt;</code> heeft op verschillende pagina's een <strong>andere layout</strong> die past bij het doel van die pagina, terwijl header, nav en footer <strong>consistent</strong> zijn</li>
+    <li>Veel <strong>verschillende soorten HTML-elementen</strong> &mdash; bijna alles wat je geleerd hebt komt terug</li>
+    <li>Effectief gebruik van <strong>grid</strong>, <strong>flexbox</strong> en eventueel <strong>float</strong></li>
+    <li>Goede balans tussen tekst en beeld, passende afbeeldingen</li>
+    <li>Professionele, aantrekkelijke vormgeving met een duidelijke <strong>huisstijl</strong></li>
+    <li>Knoppen veranderen van kleur/vorm bij <strong>hover</strong></li>
+  </ul>
+
+  <h3>Bestanden</h3>
+  <ul>
+    <li>Hoofdpagina: <code>index.html</code></li>
+    <li>CSS-bestand: <code>style.css</code> (1 bestand voor alle pagina's)</li>
+    <li>Afbeeldingen in een apart mapje</li>
+  </ul>
+
+  <div class="highlight">
+    <strong>Je kunt ook via trinket.io werken op je Chromebook</strong>, maar test je site dan ook altijd door het te downloaden en in de browser te openen.
+  </div>
+
+  <div class="highlight danger">
+    <strong>Niet toegestaan:</strong>
+    <ul style="margin-bottom:0;">
+      <li>Externe libraries of frameworks (geen Bootstrap, Tailwind, etc.)</li>
+      <li>Software waarmee een webpagina gegenereerd wordt (geen Wix, WordPress, etc.)</li>
+      <li>Code rechtstreeks kopi&euml;ren &mdash; je mag voorbeelden opzoeken, maar schrijf de code zelf</li>
+      <li>Vermeld bronnen altijd in commentaarregels of je verslag</li>
+      <li>Je moet <strong>altijd kunnen uitleggen</strong> wat je code doet</li>
+    </ul>
+  </div>
+</div>
+
+<!-- GEBRUIKERSTESTS -->
+<div class="section" id="tests">
+  <h2>Gebruikerstests</h2>
+  <p>Wanneer je website (grotendeels) af is, voer je <strong>twee verschillende gebruikerstests</strong> uit:</p>
 
   <div class="step">
     <div class="step-num">1</div>
     <div class="step-content">
-      <strong>Voorkant</strong>
-      <p>Een nette titelpagina met: titel van je website, je naam, klas, datum en het vak.</p>
+      <strong>Brede test (enqu&ecirc;te)</strong>
+      <p>Een test met een <strong>grotere groep leerlingen</strong>, bijvoorbeeld via een enqu&ecirc;te. Stel gerichte vragen over navigatie, leesbaarheid, uiterlijk en inhoud.</p>
     </div>
   </div>
 
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-content">
-      <strong>Inhoudsopgave</strong>
-      <p>Een overzicht van alle onderdelen van je verslag met paginanummers.</p>
+      <strong>Verdiepende test (interview)</strong>
+      <p>Een test met <strong>&eacute;&eacute;n of twee leerlingen</strong> waarbij je dieper op de vragen ingaat. Kijk mee hoe zij de website gebruiken. Waar lopen ze vast? Wat vinden ze verwarrend?</p>
     </div>
   </div>
 
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-content">
-      <strong>Doelen en doelgroep</strong>
-      <p>Beschrijf het doel van je website (informeren, entertainen, overtuigen?) en voor wie de site bedoeld is. Hoe be&iuml;nvloedt dit je ontwerpkeuzes?</p>
-    </div>
-  </div>
-
-  <div class="step">
-    <div class="step-num">4</div>
-    <div class="step-content">
-      <strong>Sitemap</strong>
-      <p>Een visueel overzicht (boomstructuur) van alle pagina's en hoe ze met elkaar verbonden zijn.</p>
-    </div>
-  </div>
-
-  <div class="step">
-    <div class="step-num">5</div>
-    <div class="step-content">
-      <strong>Basiselementen</strong>
-      <p>Beschrijf je ontwerpkeuzes:</p>
-      <ul>
-        <li><strong>Kleuren</strong> &mdash; welke kleuren gebruik je en waarom? (noem de kleurcodes)</li>
-        <li><strong>Lettertypen</strong> &mdash; welke fonts kies je voor titels en lopende tekst?</li>
-        <li><strong>Stijl/sfeer</strong> &mdash; wat is de look &amp; feel van je site?</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="step">
-    <div class="step-num">6</div>
-    <div class="step-content">
-      <strong>Wireframes</strong>
-      <p>Maak wireframes (schematische schetsen) van minstens 2 verschillende pagina's. Laat zien waar de navigatie, tekst, afbeeldingen en andere elementen komen. Dit mag met de hand getekend of digitaal.</p>
-      <p style="margin-top:8px;"><strong>Voorbeeld wireframe:</strong></p>
-      <svg viewBox="0 0 600 440" style="max-width:560px;width:100%;display:block;margin:10px 0;background:#fff;border:2px solid #ccc;border-radius:8px;">
-        <!-- Header -->
-        <rect x="20" y="15" width="560" height="60" rx="4" fill="#d5dbe3" stroke="#999" stroke-width="1.5"/>
-        <rect x="35" y="30" width="120" height="16" rx="2" fill="#8a9bb5"/>
-        <text x="95" y="42" text-anchor="middle" font-size="9" fill="white" font-weight="bold">LOGO</text>
-        <rect x="340" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
-        <rect x="400" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
-        <rect x="460" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
-        <rect x="520" y="33" width="50" height="10" rx="2" fill="#a0aec0"/>
-        <text x="365" y="41" text-anchor="middle" font-size="7" fill="white">Home</text>
-        <text x="425" y="41" text-anchor="middle" font-size="7" fill="white">Over</text>
-        <text x="485" y="41" text-anchor="middle" font-size="7" fill="white">Foto's</text>
-        <text x="545" y="41" text-anchor="middle" font-size="7" fill="white">Contact</text>
-        <!-- Label -->
-        <text x="305" y="32" text-anchor="middle" font-size="9" fill="#666" font-style="italic">navigatie</text>
-
-        <!-- Hero -->
-        <rect x="20" y="85" width="560" height="90" rx="4" fill="#e8edf3" stroke="#999" stroke-width="1" stroke-dasharray="5,3"/>
-        <text x="300" y="125" text-anchor="middle" font-size="13" fill="#666">Hero-afbeelding</text>
-        <rect x="210" y="140" width="180" height="20" rx="3" fill="#8a9bb5"/>
-        <text x="300" y="154" text-anchor="middle" font-size="9" fill="white">Titel van de website</text>
-
-        <!-- Content area -->
-        <rect x="20" y="190" width="360" height="150" rx="4" fill="#f4f6f8" stroke="#999" stroke-width="1"/>
-        <rect x="35" y="205" width="180" height="12" rx="2" fill="#b0bec5"/>
-        <rect x="35" y="225" width="330" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="35" y="240" width="310" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="35" y="255" width="320" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="35" y="270" width="280" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="35" y="290" width="330" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="35" y="305" width="300" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="35" y="320" width="250" height="8" rx="2" fill="#cfd8dc"/>
-        <text x="200" y="202" text-anchor="middle" font-size="9" fill="#666" font-style="italic">tekst + kopjes</text>
-
-        <!-- Sidebar -->
-        <rect x="395" y="190" width="185" height="150" rx="4" fill="#f4f6f8" stroke="#999" stroke-width="1"/>
-        <rect x="410" y="205" width="155" height="70" rx="3" fill="#e8edf3" stroke="#999" stroke-width="1" stroke-dasharray="4,2"/>
-        <text x="487" y="244" text-anchor="middle" font-size="10" fill="#888">afbeelding</text>
-        <rect x="410" y="285" width="155" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="410" y="300" width="130" height="8" rx="2" fill="#cfd8dc"/>
-        <rect x="410" y="315" width="140" height="8" rx="2" fill="#cfd8dc"/>
-        <text x="487" y="202" text-anchor="middle" font-size="9" fill="#666" font-style="italic">sidebar</text>
-
-        <!-- Footer -->
-        <rect x="20" y="360" width="560" height="55" rx="4" fill="#d5dbe3" stroke="#999" stroke-width="1.5"/>
-        <rect x="35" y="375" width="200" height="8" rx="2" fill="#a0aec0"/>
-        <rect x="35" y="390" width="140" height="8" rx="2" fill="#a0aec0"/>
-        <rect x="450" y="375" width="120" height="25" rx="3" fill="#8a9bb5"/>
-        <text x="510" y="392" text-anchor="middle" font-size="8" fill="white">Contact</text>
-        <text x="300" y="372" text-anchor="middle" font-size="9" fill="#666" font-style="italic">footer</text>
-
-        <!-- Annotations -->
-        <line x1="588" y1="15" x2="600" y2="15" stroke="#c0392b" stroke-width="1"/>
-        <line x1="600" y1="15" x2="600" y2="75" stroke="#c0392b" stroke-width="1"/>
-        <line x1="588" y1="75" x2="600" y2="75" stroke="#c0392b" stroke-width="1"/>
-
-        <line x1="588" y1="190" x2="600" y2="190" stroke="#c0392b" stroke-width="1"/>
-        <line x1="600" y1="190" x2="600" y2="340" stroke="#c0392b" stroke-width="1"/>
-        <line x1="588" y1="340" x2="600" y2="340" stroke="#c0392b" stroke-width="1"/>
-      </svg>
-      <p style="font-size:0.9em;color:#666;margin-top:4px;">Een wireframe hoeft niet mooi te zijn &mdash; het gaat om de <strong>indeling</strong>. Schets waar elk element komt: header, navigatie, tekst, afbeeldingen, sidebar, footer. Gebruik grijze vlakken en lijnen.</p>
-    </div>
-  </div>
-
-  <div class="highlight success">
-    <strong>Tip:</strong> Kijk of je ontwerp gebruiksvriendelijk is. Stel jezelf deze vragen: Is de navigatie duidelijk? Ziet elke pagina er consistent uit? Kan een bezoeker makkelijk vinden wat hij zoekt? Is de tekst goed leesbaar? Leg je ontwerp eventueel voor aan een klasgenoot voor feedback.
-  </div>
-
-  <div class="highlight warn">
-    <strong>Belangrijk &mdash; sla je werk veilig op!</strong> Bewaar je bestanden op meerdere plekken: op je laptop, in Google Drive en eventueel op een USB-stick. "Mijn laptop is gecrasht" of "ik ben mijn bestanden kwijt" is g&eacute;&eacute;n geldige reden voor te laat inleveren. Maak regelmatig een back-up!
-  </div>
+  <p>In totaal ondervraag je minstens <strong>6 andere leerlingen</strong> (bijv. 1 interview + 5 via enqu&ecirc;te). Houd de resultaten goed bij &mdash; je moet deze ook inleveren.</p>
 </div>
 
-<!-- DEEL 2: IMPLEMENTATIE -->
-<div class="section" id="implementatie">
-  <h2>Deel 2 &mdash; Implementatie</h2>
-  <p>Bouw je website op basis van je ontwerp. Gebruik alleen HTML en CSS.</p>
-
-  <h3>Bestanden</h3>
-  <ul>
-    <li>De hoofdpagina heet altijd <code>index.html</code></li>
-    <li>De CSS-pagina heet <code>index.css</code></li>
-    <li>Afbeeldingen en andere bestanden staan in logische mappen</li>
-  </ul>
-
-  <h3>Verplichte elementen op je website</h3>
-  <ul>
-    <li>Minstens <strong>3 pagina's</strong> die aan elkaar gelinkt zijn</li>
-    <li>Een <strong>tabel</strong> (met zinvolle inhoud)</li>
-    <li>Een <strong>lijst</strong> (ordered of unordered)</li>
-    <li>Een <strong>afbeelding als link</strong> (klikbare afbeelding)</li>
-    <li><strong>Passende afbeeldingen</strong> die goed bij het onderwerp passen</li>
-    <li><strong>Goede kleurencombinatie</strong> &mdash; kleuren die bij elkaar passen &eacute;n leesbare tekst</li>
-    <li><strong>Passende lettertypen</strong></li>
-  </ul>
-
-  <div class="highlight warn">
-    <strong>Niet toegestaan:</strong>
-    <ul style="margin-bottom:0;">
-      <li>Externe libraries of frameworks (geen Bootstrap, Tailwind, etc.)</li>
-      <li>Software waarmee een webpagina gegenereerd wordt (geen Wix, WordPress, etc.)</li>
-      <li>Code rechtstreeks kopi&euml;ren &mdash; je mag voorbeelden opzoeken, maar schrijf de code zelf en vermeld je bronnen in commentaarregels of in je verslag</li>
-      <li>Je moet <strong>altijd kunnen uitleggen</strong> wat je code doet</li>
-    </ul>
-  </div>
+<!-- REFLECTIEVERSLAG -->
+<div class="section" id="reflectie">
+  <h2>Reflectieverslag</h2>
+  <p>Schrijf een verslag waarin je de volgende onderwerpen bespreekt:</p>
+  <ol>
+    <li>Welke <strong>aanpassingen</strong> heb je gedaan op basis van de gebruikerstests?</li>
+    <li>Welke andere mogelijke <strong>verbeterpunten</strong> kwamen er uit de tests?</li>
+    <li>Ben je het <strong>eens</strong> met deze verbeterpunten? Waarom wel/niet?</li>
+    <li>Zijn er nog pagina's of features die je graag had willen <strong>toevoegen</strong>?</li>
+    <li>Ben je <strong>afgeweken</strong> van het originele ontwerp? Zo ja, hoe en waarom?</li>
+    <li>Wat heb je geleerd over <strong>code schrijven</strong>?</li>
+    <li>Wat vond je <strong>moeilijk</strong> en hoe heb je dit opgelost?</li>
+    <li>Hoe ging de <strong>samenwerking</strong>? (niet invullen als je het alleen hebt gemaakt)</li>
+  </ol>
 </div>
 
-<!-- TECHNISCHE EISEN -->
-<div class="section" id="eisen">
-  <h2>Technische eisen</h2>
-  <p>Je website moet aan de volgende technische eisen voldoen:</p>
-
-  <h3>HTML</h3>
-  <ul>
-    <li>Correcte HTML5-structuur (<code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code>)</li>
-    <li>Gebruik van semantische elementen (<code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>)</li>
-    <li>Goede nesting en inspringing van je code</li>
-    <li>Alt-teksten bij afbeeldingen</li>
-  </ul>
-
-  <h3>CSS</h3>
-  <ul>
-    <li>Alle opmaak via een <strong>extern CSS-bestand</strong> (<code>index.css</code>)</li>
-    <li>Geen inline styling (geen <code>style="..."</code> in je HTML)</li>
-    <li>Gebruik van passende selectors (element, class, id)</li>
-    <li>Nette, leesbare CSS met logische groepering</li>
-  </ul>
+<!-- INLEVERING -->
+<div class="section" id="inlevering">
+  <h2>Inlevering</h2>
+  <p>Je levert uiterlijk op de inleverdatum het volgende in via <strong>Google Classroom</strong>:</p>
+  <ol>
+    <li>Het ingevulde <strong>ontwerp-werkblad</strong></li>
+    <li>Een mapje met jouw <strong>website</strong> (HTML, CSS, afbeeldingen)</li>
+    <li>Uitkomsten van de <strong>gebruikerstests</strong></li>
+    <li>Het <strong>reflectieverslag</strong></li>
+  </ol>
+  <div class="highlight">
+    <strong>Hoe inleveren:</strong> Pak alle bestanden in als een <strong>.zip</strong>-bestand met je voor- en achternaam. Lever dit in via Google Classroom.
+  </div>
 </div>
 
 <!-- PLANNING -->
@@ -464,107 +480,140 @@
   <p>Verdeel je werk over de beschikbare weken:</p>
   <div class="timeline">
     <div class="timeline-item">
-      <div class="week">Week 1</div>
-      <div class="task">Onderwerp kiezen, doelen &amp; doelgroep beschrijven</div>
+      <div class="week">Week 1&ndash;2</div>
+      <div class="task">Onderwerp kiezen, ontwerp-werkblad invullen (user stories, sitemap, wireframes)</div>
     </div>
     <div class="timeline-item">
-      <div class="week">Week 2</div>
-      <div class="task">Sitemap, basiselementen, wireframes maken</div>
+      <div class="week">Week 3&ndash;4</div>
+      <div class="task">Content zoeken, HTML-structuur bouwen, pagina's aanmaken</div>
     </div>
     <div class="timeline-item">
-      <div class="week">Week 3</div>
-      <div class="task">HTML-structuur bouwen, pagina's aanmaken</div>
+      <div class="week">Week 5&ndash;6</div>
+      <div class="task">CSS-opmaak, layout (grid/flexbox), afbeeldingen, afwerking</div>
     </div>
     <div class="timeline-item">
-      <div class="week">Week 4</div>
-      <div class="task">CSS-opmaak, afbeeldingen, afwerking</div>
+      <div class="week">Week 7</div>
+      <div class="task">Gebruikerstests uitvoeren, aanpassingen doorvoeren</div>
     </div>
     <div class="timeline-item">
-      <div class="week">Week 5</div>
-      <div class="task">Testen, feedback, verslag afronden, inleveren</div>
+      <div class="week">Week 8</div>
+      <div class="task">Reflectie-verslag schrijven, alles inleveren</div>
     </div>
-  </div>
-</div>
-
-<!-- INLEVERING -->
-<div class="section" id="inlevering">
-  <h2>Inlevering</h2>
-  <p>Je levert uiterlijk op de inleverdatum het volgende in via <strong>Google Classroom</strong>:</p>
-  <ol>
-    <li>Je <strong>verslag</strong> met het functioneel ontwerp (PDF of Word)</li>
-    <li>Alle <strong>websitebestanden</strong> (HTML, CSS, afbeeldingen, etc.)</li>
-  </ol>
-  <div class="highlight">
-    <strong>Hoe inleveren:</strong> Pak alle bestanden in als een <strong>.zip</strong>-bestand. Noem het bestand: <code>voornaam-achternaam-po-webdesign.zip</code>. Lever dit ingepakte bestand in via Google Classroom.
   </div>
 </div>
 
 <!-- BEOORDELING -->
 <div class="section" id="beoordeling">
   <h2>Beoordeling</h2>
-  <p>Je werk wordt beoordeeld op de volgende onderdelen:</p>
 
+  <h3>Cijferberekening</h3>
+  <p>Er zijn <strong>9 onderdelen</strong> waarop je beoordeeld wordt (0&ndash;5 punten per onderdeel). Daarnaast kun je <strong>3 bonuspunten</strong> verdienen. Je cijfer wordt berekend als:</p>
+  <div class="highlight" style="text-align:center;font-size:1.15em;">
+    <strong>Cijfer = punten &divide; 5 + 1</strong><br>
+    <span style="font-size:0.85em;opacity:0.8;">Elk punt is 0,2 van je cijfer. Maximum: (45 + 3) &divide; 5 + 1 = 10,6 &rarr; afgerond 10,0</span>
+  </div>
+
+  <h3>Scores</h3>
+  <table class="scores">
+    <tr><th>Score</th><th>Punten</th><th>Betekenis</th></tr>
+    <tr><td><strong>Uitstekend</strong></td><td>5</td><td>Gaat boven de eisen of is bijzonder origineel, naast dat het aan alle eisen voldoet</td></tr>
+    <tr><td><strong>Goed</strong></td><td>4</td><td>Voldoet aan alle eisen van de opdracht</td></tr>
+    <tr><td><strong>Voldoende</strong></td><td>3</td><td>Voldoet aan de eisen, maar had op sommige punten beter gekund</td></tr>
+    <tr><td><strong>Matig</strong></td><td>2</td><td>Gedaan, maar voldoet deels niet aan de eisen of er missen onderdelen</td></tr>
+    <tr><td><strong>Onvoldoende</strong></td><td>1</td><td>Voldoet niet aan de eisen, of er missen veel onderdelen</td></tr>
+    <tr><td><strong>Mist</strong></td><td>0</td><td>Dit onderdeel is niet gedaan</td></tr>
+  </table>
+
+  <h3>Onderdelen</h3>
   <table class="rubric">
+    <tr><th>#</th><th>Onderdeel</th><th>Wat wordt er beoordeeld?</th><th class="pts">Max</th></tr>
     <tr>
-      <th>Onderdeel</th>
-      <th>Omschrijving</th>
-      <th class="pts">Punten</th>
+      <td>0</td>
+      <td><strong>Basis</strong></td>
+      <td>Pagina's werken in de browser. Minstens 5 (havo) of 6 (vwo) verschillende pagina's incl. homepage. Via een menu kun je op elke pagina komen en terug naar home.</td>
+      <td class="pts">&mdash;</td>
     </tr>
     <tr>
-      <td><strong>Verslag: voorkant &amp; inhoudsopgave</strong></td>
-      <td>Nette voorkant met alle gegevens, duidelijke inhoudsopgave</td>
+      <td>1</td>
+      <td><strong>Ontwerp</strong></td>
+      <td>Alle vragen op het werkblad beantwoord. Sitemap en wireframes tonen alle pagina's. Structuur is helder, alles is goed leesbaar. Wireframes bevatten genoeg details. Uit het ontwerp blijkt dat je hebt nagedacht over gebruiksvriendelijkheid.</td>
       <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>Verslag: doelen &amp; doelgroep</strong></td>
-      <td>Helder beschreven doel en doelgroep, keuzes onderbouwd</td>
+      <td>2</td>
+      <td><strong>Inhoud &amp; media</strong></td>
+      <td>Teksten zijn goed geschreven en passen bij de doelgroep. Goede balans tekst/beeld. Afbeeldingen zijn scherp en voegen sfeer toe. Eventuele video's zijn relevant. Elke pagina heeft genoeg inhoud.</td>
       <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>Verslag: sitemap &amp; wireframes</strong></td>
-      <td>Duidelijke sitemap, wireframes van minstens 2 pagina's</td>
-      <td class="pts">10</td>
-    </tr>
-    <tr>
-      <td><strong>Verslag: basiselementen</strong></td>
-      <td>Kleuren, lettertypen en stijl beschreven en onderbouwd</td>
+      <td>3</td>
+      <td><strong>Complexiteit</strong></td>
+      <td>Veel verschillende soorten HTML-elementen. Bijna elk element dat je geleerd hebt komt terug. Waar toepasselijk heb je zelf elementen/properties opgezocht. Effectief gebruik van nesting.</td>
       <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>HTML: structuur &amp; semantiek</strong></td>
-      <td>Correcte HTML5, semantische elementen, nette code</td>
-      <td class="pts">15</td>
+      <td>4</td>
+      <td><strong>Kwaliteit van de code</strong></td>
+      <td>Overzichtelijke code. 1 CSS-file, geen inline CSS. Code die niet uit de stof komt is voorzien van commentaar met uitleg en bron. Classes en id's hebben logische namen. Geen dubbele classes of onnodige code.</td>
+      <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>HTML: verplichte elementen</strong></td>
-      <td>Tabel, lijst, afbeelding-als-link, passende afbeeldingen aanwezig</td>
-      <td class="pts">10</td>
+      <td>5</td>
+      <td><strong>Vormgeving</strong></td>
+      <td>Professioneel en aantrekkelijk. Duidelijke, consistente huisstijl passend bij het thema. Goed nagedacht over leesbaarheid. Borders waar nodig. Knoppen veranderen bij hover.</td>
+      <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>CSS: opmaak &amp; design</strong></td>
-      <td>Extern CSS-bestand, passende kleuren/fonts, leesbare tekst, consistent</td>
-      <td class="pts">15</td>
+      <td>6</td>
+      <td><strong>Layout</strong></td>
+      <td>Elementen op logische plekken, goede afstanden. Effectief gebruik van grid &eacute;n flexbox (en eventueel float). Opsplitsing in header/nav/main/footer. De main heeft per pagina een andere layout, de rest is consistent.</td>
+      <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>CSS: selectors &amp; technieken</strong></td>
-      <td>Juist gebruik van selectors (element, class, id), nette CSS-code</td>
-      <td class="pts">10</td>
+      <td>7</td>
+      <td><strong>Gebruikerstests</strong></td>
+      <td>Minstens 2 verschillende tests, in totaal minstens 6 leerlingen ondervraagd. Uitkomsten goed gedocumenteerd. Genoeg vragen die helpen bij het vinden van verbeterpunten.</td>
+      <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>Usability &amp; afwerking</strong></td>
-      <td>Navigatie werkt, site is gebruiksvriendelijk, afgewerkt geheel</td>
-      <td class="pts">15</td>
+      <td>8</td>
+      <td><strong>Aanpassingen o.b.v. tests</strong></td>
+      <td>Minstens 3 aanpassingen gemaakt op basis van feedback, beschreven in het reflectieverslag. Aanpassingen verbeteren de gebruiksvriendelijkheid. Andere mogelijke aanpassingen ook beschreven.</td>
+      <td class="pts">5</td>
     </tr>
     <tr>
-      <td><strong>Bronvermelding</strong></td>
-      <td>Bronnen van afbeeldingen en code-voorbeelden vermeld</td>
-      <td class="pts">10</td>
+      <td>9</td>
+      <td><strong>Reflectie</strong></td>
+      <td>Uitgebreid antwoord op alle reflectievragen. Uit de antwoorden blijkt dat je goed hebt stilgestaan bij de verschillende aspecten van het project.</td>
+      <td class="pts">5</td>
     </tr>
     <tr class="total-row">
-      <td colspan="2">Totaal</td>
-      <td class="pts">100</td>
+      <td></td>
+      <td colspan="2">Totaal (exclusief bonus)</td>
+      <td class="pts">45</td>
     </tr>
   </table>
+
+  <h3>Bonuspunten (max. 3 extra)</h3>
+  <table class="rubric">
+    <tr><th>Bonus</th><th>Omschrijving</th><th class="pts">Punten</th></tr>
+    <tr>
+      <td><strong>Favicon</strong></td>
+      <td>Je hebt een eigen logo ontworpen en deze is zichtbaar als favicon in de browser-tab.</td>
+      <td class="pts">+1</td>
+    </tr>
+    <tr>
+      <td><strong>CSS-animaties</strong></td>
+      <td>Je gebruikt CSS-animaties om bewegende elementen toe te voegen waar dat toepasselijk is.</td>
+      <td class="pts">+1</td>
+    </tr>
+    <tr>
+      <td><strong>Mobiele versie</strong></td>
+      <td>Jouw website heeft een mobiele versie die fijner te gebruiken is op een verticaal scherm. De site wisselt automatisch of biedt de gebruiker de optie om te wisselen.</td>
+      <td class="pts">+1</td>
+    </tr>
+  </table>
+  <p style="font-size:0.9em;color:#666;">Ook voor de bonuspunten geldt: je moet je code kunnen uitleggen.</p>
 </div>
 
 <!-- CHECKLIST -->
@@ -572,47 +621,64 @@
   <h2>Checklist</h2>
   <p>Gebruik deze checklist om te controleren of je alles hebt:</p>
 
-  <h3>Verslag</h3>
+  <h3>Ontwerp</h3>
   <ul class="checklist">
-    <li><input type="checkbox" id="c1"><label for="c1">Nette voorkant met naam, klas, datum, vak en titel</label></li>
-    <li><input type="checkbox" id="c2"><label for="c2">Inhoudsopgave met paginanummers</label></li>
-    <li><input type="checkbox" id="c3"><label for="c3">Doelen en doelgroep beschreven</label></li>
-    <li><input type="checkbox" id="c4"><label for="c4">Sitemap (boomstructuur)</label></li>
-    <li><input type="checkbox" id="c5"><label for="c5">Basiselementen: kleuren, lettertypen, stijl</label></li>
-    <li><input type="checkbox" id="c6"><label for="c6">Wireframes van minstens 2 pagina's</label></li>
+    <li><input type="checkbox" id="c1"><label for="c1">Ontwerp-werkblad volledig ingevuld</label></li>
+    <li><input type="checkbox" id="c2"><label for="c2">User stories beschreven</label></li>
+    <li><input type="checkbox" id="c3"><label for="c3">Sitemap met alle pagina's</label></li>
+    <li><input type="checkbox" id="c4"><label for="c4">Wireframes van je pagina's</label></li>
   </ul>
 
   <h3>Website</h3>
   <ul class="checklist">
-    <li><input type="checkbox" id="c7"><label for="c7">Hoofdpagina heet <code>index.html</code></label></li>
-    <li><input type="checkbox" id="c8"><label for="c8">CSS in apart bestand <code>index.css</code></label></li>
-    <li><input type="checkbox" id="c9"><label for="c9">Minstens 3 pagina's die aan elkaar gelinkt zijn</label></li>
-    <li><input type="checkbox" id="c10"><label for="c10">Een tabel met zinvolle inhoud</label></li>
-    <li><input type="checkbox" id="c11"><label for="c11">Een lijst (ol of ul)</label></li>
-    <li><input type="checkbox" id="c12"><label for="c12">Een afbeelding als link</label></li>
-    <li><input type="checkbox" id="c13"><label for="c13">Passende afbeeldingen bij het onderwerp</label></li>
-    <li><input type="checkbox" id="c14"><label for="c14">Goede kleurencombinatie, leesbare tekst</label></li>
-    <li><input type="checkbox" id="c15"><label for="c15">Geen inline styling, geen libraries</label></li>
-    <li><input type="checkbox" id="c16"><label for="c16">Bronvermelding in verslag of commentaarregels</label></li>
+    <li><input type="checkbox" id="c5"><label for="c5">Minstens 5 (havo) of 6 (vwo) verschillende pagina's</label></li>
+    <li><input type="checkbox" id="c6"><label for="c6">Homepage heet <code>index.html</code></label></li>
+    <li><input type="checkbox" id="c7"><label for="c7">Alle CSS in &eacute;&eacute;n bestand: <code>style.css</code></label></li>
+    <li><input type="checkbox" id="c8"><label for="c8">Geen inline CSS, geen libraries</label></li>
+    <li><input type="checkbox" id="c9"><label for="c9">Menu waarmee je op elke pagina kunt komen</label></li>
+    <li><input type="checkbox" id="c10"><label for="c10">Gebruik van <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code></label></li>
+    <li><input type="checkbox" id="c11"><label for="c11">Effectief gebruik van grid en flexbox</label></li>
+    <li><input type="checkbox" id="c12"><label for="c12">Veel verschillende HTML-elementen gebruikt</label></li>
+    <li><input type="checkbox" id="c13"><label for="c13">Passende afbeeldingen, goede balans tekst/beeld</label></li>
+    <li><input type="checkbox" id="c14"><label for="c14">Consistente huisstijl (kleuren, fonts)</label></li>
+    <li><input type="checkbox" id="c15"><label for="c15">Hover-effecten op knoppen/links</label></li>
+    <li><input type="checkbox" id="c16"><label for="c16">Bronvermelding in commentaar of verslag</label></li>
+    <li><input type="checkbox" id="c17"><label for="c17">Alle pagina's werken in de browser</label></li>
+  </ul>
+
+  <h3>Gebruikerstests &amp; reflectie</h3>
+  <ul class="checklist">
+    <li><input type="checkbox" id="c18"><label for="c18">Minstens 2 verschillende tests uitgevoerd</label></li>
+    <li><input type="checkbox" id="c19"><label for="c19">In totaal minstens 6 leerlingen ondervraagd</label></li>
+    <li><input type="checkbox" id="c20"><label for="c20">Testresultaten gedocumenteerd</label></li>
+    <li><input type="checkbox" id="c21"><label for="c21">Minstens 3 aanpassingen gedaan op basis van feedback</label></li>
+    <li><input type="checkbox" id="c22"><label for="c22">Reflectieverslag met alle vragen beantwoord</label></li>
+  </ul>
+
+  <h3>Bonuspunten</h3>
+  <ul class="checklist">
+    <li><input type="checkbox" id="c23"><label for="c23">Eigen favicon ontworpen (+1)</label></li>
+    <li><input type="checkbox" id="c24"><label for="c24">CSS-animaties toegevoegd (+1)</label></li>
+    <li><input type="checkbox" id="c25"><label for="c25">Mobiele versie gemaakt (+1)</label></li>
   </ul>
 
   <h3>Inlevering</h3>
   <ul class="checklist">
-    <li><input type="checkbox" id="c17"><label for="c17">Verslag als PDF of Word</label></li>
-    <li><input type="checkbox" id="c18"><label for="c18">Alle bestanden ingepakt als .zip</label></li>
-    <li><input type="checkbox" id="c19"><label for="c19">Zipbestand heet <code>voornaam-achternaam-po-webdesign.zip</code></label></li>
-    <li><input type="checkbox" id="c20"><label for="c20">Ingeleverd via Google Classroom voor de deadline</label></li>
+    <li><input type="checkbox" id="c26"><label for="c26">Ontwerp-werkblad ingeleverd</label></li>
+    <li><input type="checkbox" id="c27"><label for="c27">Websitebestanden (HTML, CSS, afbeeldingen) ingepakt</label></li>
+    <li><input type="checkbox" id="c28"><label for="c28">Testresultaten ingeleverd</label></li>
+    <li><input type="checkbox" id="c29"><label for="c29">Reflectieverslag ingeleverd</label></li>
+    <li><input type="checkbox" id="c30"><label for="c30">Alles als .zip via Google Classroom ingeleverd</label></li>
   </ul>
 </div>
 
 <footer>
-  PO Webdesign &mdash; 4 havo Informatica &mdash; 2025/2026 &mdash; Minkema College
+  PO Webdesign &mdash; 4 H/V Informatica &mdash; 2025/2026 &mdash; Minkema College
 </footer>
 
 </div>
 
 <script>
-// Bewaar checkboxen in localStorage
 document.querySelectorAll('.checklist input[type="checkbox"]').forEach(cb => {
   const key = 'po_webdesign_' + cb.id;
   cb.checked = localStorage.getItem(key) === 'true';

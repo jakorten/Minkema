@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Ontwerp Werkblad &mdash; 4 H/V Informatica</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.7;
+    padding: 20px;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+
+  header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    padding: 32px 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  header h1 { font-size: 1.9em; margin-bottom: 4px; }
+  header .sub { opacity: 0.85; font-size: 1.05em; }
+
+  .section {
+    background: white;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-left: 4px solid #0f3460;
+  }
+  .section h2 {
+    color: #0f3460;
+    font-size: 1.25em;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8eaf0;
+  }
+  .section p { margin-bottom: 10px; }
+
+  label.field-label {
+    display: block;
+    font-weight: 600;
+    color: #0f3460;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    font-size: 0.95em;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95em;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: #0f3460;
+  }
+  textarea { min-height: 70px; }
+
+  /* User stories */
+  .user-story {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .user-story .story-num {
+    position: absolute;
+    top: -10px;
+    left: 14px;
+    background: #0f3460;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85em;
+  }
+  .story-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .story-row .story-label {
+    background: #e3f2fd;
+    color: #0f3460;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 0.9em;
+    min-width: 80px;
+    text-align: center;
+    margin-top: 2px;
+  }
+  .story-row input[type="text"] { flex: 1; }
+
+  .btn-add {
+    background: #0f3460;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+  .btn-add:hover { background: #1a5276; }
+  .btn-remove {
+    background: none;
+    border: none;
+    color: #c0392b;
+    font-size: 1.3em;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    line-height: 1;
+  }
+  .btn-remove:hover { color: #e74c3c; }
+
+  /* Sitemap canvas */
+  .sitemap-area {
+    background: #fafafa;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 200px;
+    margin-top: 10px;
+  }
+  .sitemap-hint {
+    color: #888;
+    font-size: 0.9em;
+    margin-bottom: 12px;
+  }
+  .sitemap-nodes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .sitemap-level {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .sitemap-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sitemap-node input {
+    width: 140px;
+    padding: 8px 10px;
+    border: 2px solid #90caf9;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9em;
+    background: #e3f2fd;
+  }
+  .sitemap-node input:focus {
+    outline: none;
+    border-color: #0f3460;
+    background: white;
+  }
+  .sitemap-node .node-remove {
+    background: none;
+    border: none;
+    color: #c0392b;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 2px;
+  }
+  .sitemap-connector {
+    width: 2px;
+    height: 16px;
+    background: #0f3460;
+    margin: 0 auto;
+  }
+  .sitemap-branch {
+    height: 2px;
+    background: #0f3460;
+    margin: 0 auto;
+  }
+  .btn-small {
+    background: #e3f2fd;
+    color: #0f3460;
+    border: 1px solid #90caf9;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin: 4px;
+  }
+  .btn-small:hover { background: #bbdefb; }
+
+  /* Color picker */
+  .color-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .color-row input[type="color"] {
+    width: 50px;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 2px;
+  }
+  .color-row input[type="text"] {
+    width: 120px;
+    flex: none;
+  }
+  .color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  /* Wireframe drawing */
+  .wireframe-area {
+    position: relative;
+    margin-top: 10px;
+  }
+  .wireframe-canvas {
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: crosshair;
+    display: block;
+    width: 100%;
+    touch-action: none;
+  }
+  .wireframe-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .wireframe-tools button {
+    padding: 8px 14px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.15s;
+  }
+  .wireframe-tools button:hover { border-color: #0f3460; }
+  .wireframe-tools button.active {
+    background: #0f3460;
+    color: white;
+    border-color: #0f3460;
+  }
+
+  /* Save/load */
+  .actions {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    text-align: center;
+  }
+  .actions button {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 5px;
+    transition: background 0.2s;
+  }
+  .actions button:hover { background: #219a52; }
+  .actions button.secondary {
+    background: #0f3460;
+  }
+  .actions button.secondary:hover { background: #1a5276; }
+  .actions button.warn {
+    background: #c0392b;
+  }
+  .actions button.warn:hover { background: #a93226; }
+  .save-status {
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: #27ae60;
+    min-height: 20px;
+  }
+
+  .highlight {
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 0.92em;
+  }
+  .highlight strong { color: #0f3460; }
+
+  footer {
+    text-align: center;
+    padding: 24px 0 8px;
+    color: #888;
+    font-size: 0.85em;
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .actions, .btn-add, .btn-remove, .node-remove, .wireframe-tools { display: none !important; }
+    .section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+    header { background: #1a1a2e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 10px; }
+    header { padding: 20px 16px; }
+    header h1 { font-size: 1.5em; }
+    .section { padding: 18px; }
+    .story-row { flex-direction: column; }
+    .story-row .story-label { min-width: auto; }
+    .color-row input[type="text"] { width: 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>Website Ontwerp Werkblad</h1>
+  <p class="sub">PO Webdesign &mdash; 4 H/V Informatica &mdash; 2025/2026</p>
+</header>
+
+<div class="highlight">
+  <strong>Dit werkblad wordt automatisch opgeslagen in je browser.</strong> Je kunt het ook exporteren als tekstbestand via de knoppen onderaan. Vergeet niet regelmatig een back-up te maken!
+</div>
+
+<!-- ALGEMENE INFORMATIE -->
+<div class="section" id="algemeen">
+  <h2>Algemene informatie</h2>
+
+  <label class="field-label" for="namen">Namen:</label>
+  <input type="text" id="namen" data-save="namen" placeholder="Bijv. Lisa de Vries & Ahmed Hassan">
+
+  <label class="field-label" for="onderwerp">Onderwerp van jullie website:</label>
+  <textarea id="onderwerp" data-save="onderwerp" rows="2" placeholder="Bijv. Een gids over de mooiste wandelroutes in Nederland"></textarea>
+
+  <label class="field-label" for="websitenaam">Naam van jullie website:</label>
+  <input type="text" id="websitenaam" data-save="websitenaam" placeholder="Bijv. WandelNL">
+
+  <label class="field-label" for="doel">Omschrijving van het doel:</label>
+  <textarea id="doel" data-save="doel" rows="3" placeholder="Wat is het doel van de website? Wil je informeren, vermaken, overtuigen?"></textarea>
+
+  <label class="field-label" for="doelgroep">Wie is je doelgroep?</label>
+  <input type="text" id="doelgroep" data-save="doelgroep" placeholder="Bijv. jongeren van 14-18 die van wandelen houden">
+</div>
+
+<!-- USER STORIES -->
+<div class="section" id="userstories">
+  <h2>User Stories</h2>
+  <p>Beschrijf minstens <strong>2 user stories</strong>. Een user story beschrijft wat een gebruiker wil doen op je site en waarom.</p>
+
+  <div id="stories-container">
+    <div class="user-story" data-story="0">
+      <span class="story-num">1</span>
+      <div class="story-row">
+        <span class="story-label">Als...</span>
+        <input type="text" data-save="story-0-als" placeholder="(type gebruiker, bijv. 'wandelaar')">
+      </div>
+      <div class="story-row">
+        <span class="story-label">Wil ik...</span>
+        <input type="text" data-save="story-0-wil" placeholder="(wat wil de gebruiker doen?)">
+      </div>
+      <div class="story-row">
+        <span class="story-label">Zodat ik...</span>
+        <input type="text" data-save="story-0-zodat" placeholder="(waarom? wat levert het op?)">
+      </div>
+    </div>
+
+    <div class="user-story" data-story="1">
+      <span class="story-num">2</span>
+      <button class="btn-remove" onclick="removeStory(this)" title="Verwijder">&times;</button>
+      <div class="story-row">
+        <span class="story-label">Als...</span>
+        <input type="text" data-save="story-1-als" placeholder="(type gebruiker)">
+      </div>
+      <div class="story-row">
+        <span class="story-label">Wil ik...</span>
+        <input type="text" data-save="story-1-wil" placeholder="(wat wil de gebruiker doen?)">
+      </div>
+      <div class="story-row">
+        <span class="story-label">Zodat ik...</span>
+        <input type="text" data-save="story-1-zodat" placeholder="(waarom?)">
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-add" onclick="addStory()">+ User story toevoegen</button>
+</div>
+
+<!-- SITEMAP -->
+<div class="section" id="sitemap">
+  <h2>Sitemap</h2>
+  <p>Vul hieronder de namen van je pagina's in. De homepage staat bovenaan, de subpagina's eronder.</p>
+
+  <div class="sitemap-area">
+    <div class="sitemap-nodes" id="sitemap-nodes">
+      <!-- Homepage -->
+      <div class="sitemap-level" id="sitemap-home">
+        <div class="sitemap-node">
+          <input type="text" data-save="sitemap-home" value="Home (index.html)" style="border-color:#0f3460;background:#d4e6f9;width:180px;">
+        </div>
+      </div>
+      <div class="sitemap-connector"></div>
+      <div class="sitemap-branch" id="sitemap-branch" style="width:60%;"></div>
+      <div class="sitemap-connector"></div>
+      <!-- Subpagina's -->
+      <div class="sitemap-level" id="sitemap-pages">
+        <div class="sitemap-node">
+          <input type="text" data-save="sitemap-p1" placeholder="Pagina 2">
+          <button class="node-remove" onclick="removeNode(this)" title="Verwijder">&times;</button>
+        </div>
+        <div class="sitemap-node">
+          <input type="text" data-save="sitemap-p2" placeholder="Pagina 3">
+          <button class="node-remove" onclick="removeNode(this)" title="Verwijder">&times;</button>
+        </div>
+        <div class="sitemap-node">
+          <input type="text" data-save="sitemap-p3" placeholder="Pagina 4">
+          <button class="node-remove" onclick="removeNode(this)" title="Verwijder">&times;</button>
+        </div>
+        <div class="sitemap-node">
+          <input type="text" data-save="sitemap-p4" placeholder="Pagina 5">
+          <button class="node-remove" onclick="removeNode(this)" title="Verwijder">&times;</button>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn-small" onclick="addPage()">+ Pagina toevoegen</button>
+    </div>
+  </div>
+</div>
+
+<!-- DESIGN & HUISSTIJL -->
+<div class="section" id="design">
+  <h2>Design &amp; huisstijl</h2>
+
+  <label class="field-label" for="sfeer">Welke sfeer moet de site uitstralen?</label>
+  <textarea id="sfeer" data-save="sfeer" rows="2" placeholder="Bijv. sportief en energiek, rustig en natuurlijk, modern en strak..."></textarea>
+
+  <label class="field-label">Achtergrondkleur 1:</label>
+  <div class="color-row">
+    <input type="color" id="bg1-picker" value="#ffffff" onchange="syncColor('bg1')">
+    <input type="text" id="bg1-text" data-save="bg1" placeholder="#ffffff" oninput="syncColorFromText('bg1')">
+    <div class="color-preview" id="bg1-preview" style="background:#ffffff;"></div>
+  </div>
+
+  <label class="field-label">Achtergrondkleur 2:</label>
+  <div class="color-row">
+    <input type="color" id="bg2-picker" value="#f0f0f0" onchange="syncColor('bg2')">
+    <input type="text" id="bg2-text" data-save="bg2" placeholder="#f0f0f0" oninput="syncColorFromText('bg2')">
+    <div class="color-preview" id="bg2-preview" style="background:#f0f0f0;"></div>
+  </div>
+
+  <label class="field-label">Tekstkleur:</label>
+  <div class="color-row">
+    <input type="color" id="txt-picker" value="#000000" onchange="syncColor('txt')">
+    <input type="text" id="txt-text" data-save="txt" placeholder="#000000" oninput="syncColorFromText('txt')">
+    <div class="color-preview" id="txt-preview" style="background:#000000;"></div>
+  </div>
+
+  <label class="field-label">Accentkleur (bijv. voor knoppen/links):</label>
+  <div class="color-row">
+    <input type="color" id="acc-picker" value="#0f3460" onchange="syncColor('acc')">
+    <input type="text" id="acc-text" data-save="acc" placeholder="#0f3460" oninput="syncColorFromText('acc')">
+    <div class="color-preview" id="acc-preview" style="background:#0f3460;"></div>
+  </div>
+
+  <label class="field-label" for="lettertype">Lettertype:</label>
+  <input type="text" id="lettertype" data-save="lettertype" placeholder="Bijv. Arial, Verdana, of een Google Font">
+
+  <!-- Preview -->
+  <label class="field-label">Voorbeeld van jouw kleuren:</label>
+  <div id="style-preview" style="border:2px solid #ddd;border-radius:10px;padding:20px;margin-top:8px;transition:all 0.3s;">
+    <h3 id="preview-heading" style="margin-bottom:8px;">Titel van je website</h3>
+    <p id="preview-text">Dit is een voorbeeld van hoe jouw kleurencombinatie eruitziet. Kies kleuren die goed bij elkaar passen en zorg dat de tekst leesbaar blijft!</p>
+    <button id="preview-button" style="padding:8px 20px;border:none;border-radius:6px;color:white;cursor:pointer;margin-top:8px;font-size:0.9em;">Voorbeeldknop</button>
+  </div>
+</div>
+
+<!-- WIREFRAMES -->
+<div class="section" id="wireframes">
+  <h2>Wireframes</h2>
+  <p>Teken hieronder je wireframes. Gebruik de tekentools of beschrijf je wireframes in tekst. Je kunt ook wireframes op papier tekenen en een foto maken.</p>
+
+  <div class="wireframe-area">
+    <div class="wireframe-tools">
+      <button class="active" onclick="setTool('pen', this)">Pen</button>
+      <button onclick="setTool('line', this)">Lijn</button>
+      <button onclick="setTool('rect', this)">Rechthoek</button>
+      <button onclick="setTool('text', this)">Tekst</button>
+      <button onclick="setTool('eraser', this)">Gum</button>
+      <span style="margin-left:auto;display:flex;gap:6px;">
+        <button onclick="clearCanvas()" style="background:#ffebee;color:#c62828;border-color:#ef9a9a;">Wis alles</button>
+        <button onclick="undoCanvas()" style="background:#fff3e0;color:#e65100;border-color:#ffb74d;">Ongedaan maken</button>
+      </span>
+    </div>
+    <canvas id="wireframe-canvas" class="wireframe-canvas" width="840" height="500"></canvas>
+    <p style="font-size:0.85em;color:#888;margin-top:6px;">Tip: teken de indeling van je pagina's: waar komen header, menu, tekst, afbeeldingen en footer?</p>
+  </div>
+
+  <label class="field-label" for="wireframe-notes">Toelichting bij je wireframes:</label>
+  <textarea id="wireframe-notes" data-save="wireframe-notes" rows="4" placeholder="Beschrijf hier wat je wireframes laten zien. Welke pagina's heb je geschetst? Hoe hangen ze samen?"></textarea>
+</div>
+
+<!-- OPSLAAN -->
+<div class="actions">
+  <button class="secondary" onclick="exportText()">Exporteer als tekst</button>
+  <button onclick="saveAll()">Opslaan in browser</button>
+  <button class="warn" onclick="if(confirm('Weet je zeker dat je alles wilt wissen? Dit kan niet ongedaan worden.')) clearAll();">Alles wissen</button>
+  <div class="save-status" id="save-status"></div>
+</div>
+
+<footer>
+  Website Ontwerp Werkblad &mdash; PO Webdesign &mdash; 4 H/V Informatica &mdash; 2025/2026 &mdash; Minkema College
+</footer>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'werkblad_ontwerp_';
+
+// ===== SAVE/LOAD =====
+function saveAll() {
+  document.querySelectorAll('[data-save]').forEach(el => {
+    localStorage.setItem(STORAGE_KEY + el.dataset.save, el.value);
+  });
+  saveStories();
+  saveSitemap();
+  saveCanvas();
+  showStatus('Opgeslagen!');
+}
+
+function loadAll() {
+  document.querySelectorAll('[data-save]').forEach(el => {
+    const val = localStorage.getItem(STORAGE_KEY + el.dataset.save);
+    if (val !== null) el.value = val;
+  });
+  loadStories();
+  loadSitemap();
+  loadCanvas();
+  updatePreview();
+  syncAllColors();
+}
+
+function clearAll() {
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith(STORAGE_KEY)) localStorage.removeItem(k);
+  });
+  location.reload();
+}
+
+function showStatus(msg) {
+  const el = document.getElementById('save-status');
+  el.textContent = msg;
+  setTimeout(() => el.textContent = '', 2500);
+}
+
+// Auto-save on input
+document.addEventListener('input', (e) => {
+  if (e.target.dataset && e.target.dataset.save) {
+    localStorage.setItem(STORAGE_KEY + e.target.dataset.save, e.target.value);
+  }
+  if (e.target.closest('#design')) updatePreview();
+});
+
+// ===== USER STORIES =====
+let storyCount = 2;
+
+function addStory() {
+  const container = document.getElementById('stories-container');
+  const idx = container.children.length;
+  const div = document.createElement('div');
+  div.className = 'user-story';
+  div.dataset.story = idx;
+  div.innerHTML = `
+    <span class="story-num">${idx + 1}</span>
+    <button class="btn-remove" onclick="removeStory(this)" title="Verwijder">&times;</button>
+    <div class="story-row">
+      <span class="story-label">Als...</span>
+      <input type="text" data-save="story-${idx}-als" placeholder="(type gebruiker)">
+    </div>
+    <div class="story-row">
+      <span class="story-label">Wil ik...</span>
+      <input type="text" data-save="story-${idx}-wil" placeholder="(wat wil de gebruiker doen?)">
+    </div>
+    <div class="story-row">
+      <span class="story-label">Zodat ik...</span>
+      <input type="text" data-save="story-${idx}-zodat" placeholder="(waarom?)">
+    </div>`;
+  container.appendChild(div);
+  renumberStories();
+}
+
+function removeStory(btn) {
+  const container = document.getElementById('stories-container');
+  if (container.children.length <= 2) return alert('Je hebt minimaal 2 user stories nodig.');
+  btn.closest('.user-story').remove();
+  renumberStories();
+  saveStories();
+}
+
+function renumberStories() {
+  document.querySelectorAll('.user-story').forEach((s, i) => {
+    s.querySelector('.story-num').textContent = i + 1;
+  });
+}
+
+function saveStories() {
+  const stories = [];
+  document.querySelectorAll('.user-story').forEach(s => {
+    const inputs = s.querySelectorAll('input');
+    stories.push({
+      als: inputs[0].value,
+      wil: inputs[1].value,
+      zodat: inputs[2].value
+    });
+  });
+  localStorage.setItem(STORAGE_KEY + 'stories', JSON.stringify(stories));
+}
+
+function loadStories() {
+  const data = localStorage.getItem(STORAGE_KEY + 'stories');
+  if (!data) return;
+  const stories = JSON.parse(data);
+  if (stories.length <= 2) {
+    // Fill existing
+    const existing = document.querySelectorAll('.user-story');
+    stories.forEach((s, i) => {
+      if (existing[i]) {
+        const inputs = existing[i].querySelectorAll('input');
+        inputs[0].value = s.als;
+        inputs[1].value = s.wil;
+        inputs[2].value = s.zodat;
+      }
+    });
+    return;
+  }
+  // Rebuild
+  const container = document.getElementById('stories-container');
+  container.innerHTML = '';
+  stories.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'user-story';
+    div.innerHTML = `
+      <span class="story-num">${i + 1}</span>
+      ${i > 0 ? '<button class="btn-remove" onclick="removeStory(this)" title="Verwijder">&times;</button>' : ''}
+      <div class="story-row"><span class="story-label">Als...</span><input type="text" data-save="story-${i}-als" value="${esc(s.als)}"></div>
+      <div class="story-row"><span class="story-label">Wil ik...</span><input type="text" data-save="story-${i}-wil" value="${esc(s.wil)}"></div>
+      <div class="story-row"><span class="story-label">Zodat ik...</span><input type="text" data-save="story-${i}-zodat" value="${esc(s.zodat)}"></div>`;
+    container.appendChild(div);
+  });
+}
+
+function esc(s) { return s ? s.replace(/"/g, '&quot;') : ''; }
+
+// ===== SITEMAP =====
+let pageCounter = 4;
+
+function addPage() {
+  pageCounter++;
+  const level = document.getElementById('sitemap-pages');
+  const div = document.createElement('div');
+  div.className = 'sitemap-node';
+  div.innerHTML = `<input type="text" data-save="sitemap-p${pageCounter}" placeholder="Pagina ${level.children.length + 2}">
+    <button class="node-remove" onclick="removeNode(this)" title="Verwijder">&times;</button>`;
+  level.appendChild(div);
+  saveSitemap();
+}
+
+function removeNode(btn) {
+  const level = document.getElementById('sitemap-pages');
+  if (level.children.length <= 4) return alert('Je hebt minimaal 5 pagina\'s nodig (havo).');
+  btn.closest('.sitemap-node').remove();
+  saveSitemap();
+}
+
+function saveSitemap() {
+  const home = document.querySelector('[data-save="sitemap-home"]').value;
+  const pages = [];
+  document.querySelectorAll('#sitemap-pages .sitemap-node input').forEach(inp => {
+    pages.push(inp.value);
+  });
+  localStorage.setItem(STORAGE_KEY + 'sitemap', JSON.stringify({ home, pages }));
+}
+
+function loadSitemap() {
+  const data = localStorage.getItem(STORAGE_KEY + 'sitemap');
+  if (!data) return;
+  const { home, pages } = JSON.parse(data);
+  document.querySelector('[data-save="sitemap-home"]').value = home;
+  const level = document.getElementById('sitemap-pages');
+  if (pages.length > level.children.length) {
+    for (let i = level.children.length; i < pages.length; i++) {
+      addPage();
+    }
+  }
+  const nodes = level.querySelectorAll('.sitemap-node input');
+  pages.forEach((p, i) => { if (nodes[i]) nodes[i].value = p; });
+}
+
+// ===== COLORS =====
+function syncColor(id) {
+  const picker = document.getElementById(id + '-picker');
+  const text = document.getElementById(id + '-text');
+  const preview = document.getElementById(id + '-preview');
+  text.value = picker.value;
+  preview.style.background = picker.value;
+  localStorage.setItem(STORAGE_KEY + id, picker.value);
+  updatePreview();
+}
+
+function syncColorFromText(id) {
+  const picker = document.getElementById(id + '-picker');
+  const text = document.getElementById(id + '-text');
+  const preview = document.getElementById(id + '-preview');
+  if (/^#[0-9a-fA-F]{6}$/.test(text.value)) {
+    picker.value = text.value;
+    preview.style.background = text.value;
+  }
+  localStorage.setItem(STORAGE_KEY + id, text.value);
+  updatePreview();
+}
+
+function syncAllColors() {
+  ['bg1', 'bg2', 'txt', 'acc'].forEach(id => {
+    const text = document.getElementById(id + '-text');
+    const picker = document.getElementById(id + '-picker');
+    const preview = document.getElementById(id + '-preview');
+    if (text.value && /^#[0-9a-fA-F]{6}$/.test(text.value)) {
+      picker.value = text.value;
+      preview.style.background = text.value;
+    }
+  });
+}
+
+function updatePreview() {
+  const bg1 = document.getElementById('bg1-text').value || '#ffffff';
+  const bg2 = document.getElementById('bg2-text').value || '#f0f0f0';
+  const txt = document.getElementById('txt-text').value || '#000000';
+  const acc = document.getElementById('acc-text').value || '#0f3460';
+  const font = document.getElementById('lettertype').value || 'Segoe UI, sans-serif';
+
+  const box = document.getElementById('style-preview');
+  box.style.background = `linear-gradient(135deg, ${bg1}, ${bg2})`;
+  box.style.color = txt;
+  box.style.fontFamily = font;
+
+  const btn = document.getElementById('preview-button');
+  btn.style.background = acc;
+}
+
+// ===== WIREFRAME CANVAS =====
+const canvas = document.getElementById('wireframe-canvas');
+const ctx = canvas.getContext('2d');
+let tool = 'pen';
+let drawing = false;
+let startX, startY;
+let history = [];
+let currentPath = [];
+
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  const w = Math.min(840, rect.width - 4);
+  canvas.style.width = w + 'px';
+  canvas.style.height = (w * 500 / 840) + 'px';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const touch = e.touches ? e.touches[0] : e;
+  return {
+    x: (touch.clientX - rect.left) * scaleX,
+    y: (touch.clientY - rect.top) * scaleY
+  };
+}
+
+function setTool(t, btn) {
+  tool = t;
+  document.querySelectorAll('.wireframe-tools button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', endDraw);
+canvas.addEventListener('mouseleave', endDraw);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e); });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e); });
+canvas.addEventListener('touchend', e => { e.preventDefault(); endDraw(e); });
+
+function startDraw(e) {
+  drawing = true;
+  const pos = getPos(e);
+  startX = pos.x;
+  startY = pos.y;
+  if (tool === 'pen' || tool === 'eraser') {
+    currentPath = [{ x: pos.x, y: pos.y }];
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+  }
+  if (tool === 'text') {
+    drawing = false;
+    const txt = prompt('Tekst:');
+    if (txt) {
+      saveHistory();
+      ctx.font = '16px Segoe UI, sans-serif';
+      ctx.fillStyle = '#333';
+      ctx.fillText(txt, pos.x, pos.y);
+      saveCanvas();
+    }
+  }
+}
+
+function draw(e) {
+  if (!drawing) return;
+  const pos = getPos(e);
+  if (tool === 'pen') {
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    currentPath.push({ x: pos.x, y: pos.y });
+  } else if (tool === 'eraser') {
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 20;
+    ctx.lineCap = 'round';
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  } else if (tool === 'line' || tool === 'rect') {
+    // Preview: redraw from history
+    restoreFromHistory();
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
+    ctx.setLineDash(tool === 'rect' ? [] : []);
+    if (tool === 'line') {
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    } else {
+      ctx.strokeRect(startX, startY, pos.x - startX, pos.y - startY);
+    }
+  }
+}
+
+function endDraw(e) {
+  if (!drawing) return;
+  drawing = false;
+  saveHistory();
+  saveCanvas();
+}
+
+function saveHistory() {
+  history.push(canvas.toDataURL());
+  if (history.length > 50) history.shift();
+}
+
+function restoreFromHistory() {
+  if (history.length === 0) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+  const img = new Image();
+  img.src = history[history.length - 1];
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0);
+}
+
+function undoCanvas() {
+  history.pop();
+  if (history.length === 0) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  } else {
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = history[history.length - 1];
+  }
+  saveCanvas();
+}
+
+function clearCanvas() {
+  if (!confirm('Weet je zeker dat je de tekening wilt wissen?')) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  history = [];
+  saveCanvas();
+}
+
+function saveCanvas() {
+  try {
+    localStorage.setItem(STORAGE_KEY + 'canvas', canvas.toDataURL());
+  } catch(e) { /* storage full */ }
+}
+
+function loadCanvas() {
+  const data = localStorage.getItem(STORAGE_KEY + 'canvas');
+  if (!data) return;
+  const img = new Image();
+  img.onload = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+    history.push(data);
+  };
+  img.src = data;
+}
+
+// ===== EXPORT =====
+function exportText() {
+  let txt = '=== WEBSITE ONTWERP WERKBLAD ===\n\n';
+  txt += '--- Algemene informatie ---\n';
+  txt += 'Namen: ' + (document.getElementById('namen').value || '') + '\n';
+  txt += 'Onderwerp: ' + (document.getElementById('onderwerp').value || '') + '\n';
+  txt += 'Websitenaam: ' + (document.getElementById('websitenaam').value || '') + '\n';
+  txt += 'Doel: ' + (document.getElementById('doel').value || '') + '\n';
+  txt += 'Doelgroep: ' + (document.getElementById('doelgroep').value || '') + '\n\n';
+
+  txt += '--- User Stories ---\n';
+  document.querySelectorAll('.user-story').forEach((s, i) => {
+    const inputs = s.querySelectorAll('input');
+    txt += `\nUser Story ${i + 1}:\n`;
+    txt += `  Als ${inputs[0].value || '...'}\n`;
+    txt += `  Wil ik ${inputs[1].value || '...'}\n`;
+    txt += `  Zodat ik ${inputs[2].value || '...'}\n`;
+  });
+
+  txt += '\n--- Sitemap ---\n';
+  txt += 'Homepage: ' + (document.querySelector('[data-save="sitemap-home"]').value || '') + '\n';
+  txt += 'Subpagina\'s:\n';
+  document.querySelectorAll('#sitemap-pages .sitemap-node input').forEach((inp, i) => {
+    txt += `  ${i + 1}. ${inp.value || '(leeg)'}\n`;
+  });
+
+  txt += '\n--- Design & huisstijl ---\n';
+  txt += 'Sfeer: ' + (document.getElementById('sfeer').value || '') + '\n';
+  txt += 'Achtergrondkleur 1: ' + (document.getElementById('bg1-text').value || '') + '\n';
+  txt += 'Achtergrondkleur 2: ' + (document.getElementById('bg2-text').value || '') + '\n';
+  txt += 'Tekstkleur: ' + (document.getElementById('txt-text').value || '') + '\n';
+  txt += 'Accentkleur: ' + (document.getElementById('acc-text').value || '') + '\n';
+  txt += 'Lettertype: ' + (document.getElementById('lettertype').value || '') + '\n';
+
+  txt += '\n--- Wireframes ---\n';
+  txt += 'Toelichting: ' + (document.getElementById('wireframe-notes').value || '') + '\n';
+  txt += '(Wireframe-tekening: zie canvas op het werkblad)\n';
+
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'website-ontwerp.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showStatus('Geexporteerd als website-ontwerp.txt');
+}
+
+// ===== INIT =====
+loadAll();
+</script>
+</body>
+</html>
