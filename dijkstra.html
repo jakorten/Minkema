@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dijkstra – stap voor stap</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f0e8;
+    --paper: #fdfaf4;
+    --ink: #1a1612;
+    --muted: #8a8070;
+    --accent: #c0392b;
+    --accent2: #2563a8;
+    --green: #1e7f4e;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 16px;
+  }
+  h1 { font-size: 1.45rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 3px; }
+  .subtitle { font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; font-family: 'DM Mono', monospace; }
+
+  .layout {
+    display: flex; gap: 22px; align-items: flex-start;
+    flex-wrap: wrap; justify-content: center; width: 100%; max-width: 980px;
+  }
+
+  .card {
+    background: var(--paper);
+    border: 1.5px solid #d8d0c0;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+  }
+
+  svg { display: block; width: 500px; height: 340px; }
+
+  .right-panel { display: flex; flex-direction: column; gap: 14px; min-width: 255px; max-width: 300px; }
+
+  .card h2 {
+    font-size: 0.72rem; font-family: 'DM Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--muted); margin-bottom: 10px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); padding: 4px 8px; text-align: left;
+    border-bottom: 1.5px solid #d8d0c0;
+  }
+  td { padding: 5px 8px; font-family: 'DM Mono', monospace; font-size: 0.85rem; border-bottom: 1px solid #ede8dc; }
+  tr.row-current td { background: #fce8e6; color: var(--accent); font-weight: 600; }
+  tr.row-visited td { background: #e8eff8; color: var(--accent2); }
+  tr.row-source td { background: #e6f4ec; color: var(--green); }
+  td.updated { color: var(--accent); font-weight: 700; }
+  td.inf { color: #c0b8a8; }
+
+  #explanation { font-size: 0.88rem; line-height: 1.6; }
+  #explanation strong { color: var(--accent); }
+  #explanation em { color: var(--accent2); font-style: normal; font-weight: 600; }
+  .final { color: var(--green); font-weight: 600; }
+  .explanation-card { min-height: 100px; }
+
+  .controls { display: flex; gap: 10px; align-items: center; justify-content: center; }
+  button {
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+    border: 1.5px solid #d8d0c0; background: var(--paper); color: var(--ink);
+    border-radius: 8px; padding: 8px 18px; cursor: pointer; transition: all 0.15s;
+  }
+  button:hover:not(:disabled) { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  button:disabled { opacity: 0.3; cursor: default; }
+  button.primary { background: var(--accent); color: white; border-color: var(--accent); }
+  button.primary:hover:not(:disabled) { background: #a02020; border-color: #a02020; }
+  .step-counter { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--muted); text-align: center; }
+
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-size: 0.76rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>Dijkstra's algoritme</h1>
+<div class="subtitle">van A naar alle knopen — gebruik ← → of de knoppen</div>
+
+<div class="layout">
+  <div class="card">
+    <svg id="graph" viewBox="0 0 500 340"></svg>
+    <div class="legend">
+      <div class="legend-item"><div class="dot" style="background:#1e7f4e"></div>start</div>
+      <div class="legend-item"><div class="dot" style="background:#c0392b"></div>actief</div>
+      <div class="legend-item"><div class="dot" style="background:#2563a8"></div>definitief</div>
+      <div class="legend-item"><div class="dot" style="background:#ddd5c0;border:1px solid #aaa"></div>onbekend</div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="card">
+      <h2>Voorlopige afstanden</h2>
+      <table>
+        <thead><tr><th>Knoop</th><th>Afstand</th><th>Via</th><th>Status</th></tr></thead>
+        <tbody id="dist-body"></tbody>
+      </table>
+    </div>
+    <div class="card explanation-card">
+      <h2>Wat gebeurt er?</h2>
+      <div id="explanation"></div>
+    </div>
+    <div class="controls">
+      <button id="btn-prev" onclick="prevStep()">← Terug</button>
+      <button id="btn-next" class="primary" onclick="nextStep()">Volgende →</button>
+    </div>
+    <div class="step-counter" id="step-counter"></div>
+  </div>
+</div>
+
+<script>
+const NODES = {
+  A: { x: 65,  y: 175 },
+  B: { x: 205, y: 70  },
+  C: { x: 205, y: 280 },
+  D: { x: 355, y: 70  },
+  E: { x: 310, y: 175 },
+  F: { x: 355, y: 280 },
+  G: { x: 450, y: 175 },
+};
+
+const EDGES = [
+  { u:'A', v:'B', w:3 },
+  { u:'A', v:'C', w:6 },
+  { u:'B', v:'C', w:2 },
+  { u:'B', v:'D', w:7 },
+  { u:'B', v:'E', w:9 },
+  { u:'C', v:'E', w:2 },
+  { u:'C', v:'F', w:6 },
+  { u:'E', v:'D', w:3 },
+  { u:'E', v:'F', w:4 },
+  { u:'D', v:'G', w:8 },
+  { u:'D', v:'F', w:5 },
+  { u:'F', v:'G', w:4 },
+];
+
+function buildSteps() {
+  const INF = Infinity;
+  const dist = {}, prev = {};
+  Object.keys(NODES).forEach(n => { dist[n] = INF; prev[n] = null; });
+  dist['A'] = 0;
+  const visited = new Set();
+  const steps = [];
+
+  steps.push({
+    phase:'init', dist:{...dist}, prev:{...prev}, visited:new Set(visited),
+    current:null, updatedNodes:[], activeEdges:[],
+    explanation:`We starten vanuit <strong>A</strong> met afstand 0. Alle andere knopen krijgen voorlopig afstand ∞ — we weten nog niets.`,
+  });
+
+  for (let iter = 0; iter < Object.keys(NODES).length; iter++) {
+    let u = null;
+    Object.keys(NODES).forEach(n => {
+      if (!visited.has(n) && dist[n] < INF)
+        if (u === null || dist[n] < dist[u]) u = n;
+    });
+    if (!u) break;
+    visited.add(u);
+
+    const selectExp = u === 'A'
+      ? `<strong>A</strong> heeft de kleinste voorlopige afstand (0). We bezoeken A en verklaren hem <em>definitief</em>.`
+      : `<strong>${u}</strong> heeft de kleinste voorlopige afstand (${dist[u]}). Elk alternatief pad moet langs een onbezochte knoop — en die zijn allemaal minstens even ver. Dus ${u} = <em>definitief</em>!`;
+
+    steps.push({
+      phase:'select', dist:{...dist}, prev:{...prev}, visited:new Set(visited),
+      current:u, updatedNodes:[], activeEdges:[],
+      explanation: selectExp,
+    });
+
+    const nbEdges = EDGES.filter(e => e.u===u||e.v===u);
+    const updated = [], active = [];
+    nbEdges.forEach(e => {
+      const nb = e.u===u ? e.v : e.u;
+      if (visited.has(nb)) return;
+      const nd = dist[u] + e.w;
+      const improved = nd < dist[nb];
+      active.push({ u, v:nb, improved, oldDist: dist[nb], newDist: nd });
+      if (improved) { dist[nb]=nd; prev[nb]=u; updated.push(nb); }
+    });
+
+    let relaxExp = `Vanuit <strong>${u}</strong> (afstand ${dist[u]}) kijken we naar de buren:<br>`;
+    if (active.length === 0) {
+      relaxExp += `Geen onbezochte buren.`;
+    } else {
+      active.forEach(a => {
+        const old = a.oldDist === Infinity ? '∞' : a.oldDist;
+        if (a.improved)
+          relaxExp += `→ <strong>${a.v}</strong>: ${old} → <strong>${a.newDist}</strong> ✓<br>`;
+        else
+          relaxExp += `→ ${a.v}: ${dist[a.v]} (geen verbetering)<br>`;
+      });
+    }
+
+    steps.push({
+      phase:'relax', dist:{...dist}, prev:{...prev}, visited:new Set(visited),
+      current:u, updatedNodes:updated, activeEdges:active,
+      explanation:relaxExp,
+    });
+  }
+
+  const finalDist = dist['G'];
+  const pathStr = getPathStr('G', prev);
+  steps.push({
+    phase:'done', dist:{...dist}, prev:{...prev}, visited:new Set(Object.keys(NODES)),
+    current:null, updatedNodes:[], activeEdges:[],
+    explanation:`<span class="final">Klaar!</span> Alle kortste paden zijn bekend. A → G = <strong>${finalDist}</strong> via <strong>${pathStr}</strong>.`,
+  });
+  return steps;
+}
+
+function getPathStr(node, prev) {
+  const p=[]; let cur=node; while(cur){p.unshift(cur);cur=prev[cur];} return p.join('→');
+}
+function getPathEdges(node, prev) {
+  const edges=[]; let cur=node; while(prev[cur]){edges.push([prev[cur],cur]);cur=prev[cur];} return edges;
+}
+
+// ── SVG ──────────────────────────────────────────────────────────
+const svg = document.getElementById('graph');
+const NS = 'http://www.w3.org/2000/svg';
+const mk = (tag,attrs) => { const e=document.createElementNS(NS,tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; };
+
+const edgeLineEls = {};
+EDGES.forEach(edge => {
+  const key = `${edge.u}-${edge.v}`;
+  const n1=NODES[edge.u], n2=NODES[edge.v];
+  const line = mk('line',{x1:n1.x,y1:n1.y,x2:n2.x,y2:n2.y,stroke:'#c8bfad','stroke-width':2.5,'stroke-linecap':'round'});
+  svg.appendChild(line);
+  edgeLineEls[key]=line;
+  const mx=(n1.x+n2.x)/2, my=(n1.y+n2.y)/2;
+  const dx=n2.y-n1.y, dy=-(n2.x-n1.x);
+  const len=Math.sqrt(dx*dx+dy*dy)||1;
+  const ox=dx/len*13, oy=dy/len*13;
+  svg.appendChild(mk('rect',{x:mx+ox-8,y:my+oy-8,width:16,height:14,rx:3,fill:'#f5f0e8'}));
+  const t=mk('text',{x:mx+ox,y:my+oy,'text-anchor':'middle','dominant-baseline':'middle',fill:'#7a7060','font-size':11,'font-family':'DM Mono,monospace','font-weight':'500'});
+  t.textContent=edge.w; svg.appendChild(t);
+});
+
+const nodeCircles={}, nodeLabels={}, nodeDistLabels={};
+Object.entries(NODES).forEach(([id,pos])=>{
+  const c=mk('circle',{cx:pos.x,cy:pos.y,r:24,fill:'#ddd5c0',stroke:'#b0a890','stroke-width':2});
+  const lab=mk('text',{x:pos.x,y:pos.y-7,'text-anchor':'middle','dominant-baseline':'middle',fill:'#1a1612','font-size':13,'font-family':'DM Sans,sans-serif','font-weight':'600'});
+  lab.textContent=id;
+  const dlab=mk('text',{x:pos.x,y:pos.y+8,'text-anchor':'middle','dominant-baseline':'middle',fill:'#999','font-size':9,'font-family':'DM Mono,monospace'});
+  svg.appendChild(c); svg.appendChild(lab); svg.appendChild(dlab);
+  nodeCircles[id]=c; nodeLabels[id]=lab; nodeDistLabels[id]=dlab;
+});
+
+// ── Render ───────────────────────────────────────────────────────
+const steps = buildSteps();
+let cur = 0;
+
+function render() {
+  const s = steps[cur];
+
+  // Edges
+  EDGES.forEach(edge => {
+    const key=`${edge.u}-${edge.v}`;
+    const ae=s.activeEdges.find(a=>(a.u===edge.u&&a.v===edge.v)||(a.u===edge.v&&a.v===edge.u));
+    let stroke='#c8bfad', sw=2.5;
+    if (ae && ae.improved) { stroke='#c0392b'; sw=3.5; }
+    if (s.phase==='done') {
+      const pe=getPathEdges('G',s.prev);
+      if (pe.some(p=>(p[0]===edge.u&&p[1]===edge.v)||(p[0]===edge.v&&p[1]===edge.u))) { stroke='#1e7f4e'; sw=3.5; }
+    }
+    edgeLineEls[key].setAttribute('stroke',stroke);
+    edgeLineEls[key].setAttribute('stroke-width',sw);
+  });
+
+  // Nodes
+  Object.keys(NODES).forEach(id=>{
+    let fill,stroke,sw=2,tf='#1a1612';
+    if (id==='A') { fill='#1e7f4e'; stroke='#15623a'; tf='white'; }
+    else if (id===s.current) { fill='#c0392b'; stroke='#8e1a14'; tf='white'; sw=2.5; }
+    else if (s.visited.has(id)) { fill='#2563a8'; stroke='#1a4a80'; tf='white'; }
+    else { fill='#ddd5c0'; stroke='#b0a890'; }
+    nodeCircles[id].setAttribute('fill',fill);
+    nodeCircles[id].setAttribute('stroke',stroke);
+    nodeCircles[id].setAttribute('stroke-width',sw);
+    nodeLabels[id].setAttribute('fill',tf);
+    const d=s.dist[id];
+    const p=s.prev[id];
+    if (id==='A') { nodeDistLabels[id].textContent='(0)'; }
+    else if (d===Infinity) { nodeDistLabels[id].textContent=''; }
+    else { nodeDistLabels[id].textContent=`(${p}-${d})`; }
+    nodeDistLabels[id].setAttribute('fill',tf==='white'?'rgba(255,255,255,0.75)':'#888');
+  });
+
+  // Table
+  const tbody=document.getElementById('dist-body');
+  tbody.innerHTML='';
+  Object.keys(NODES).forEach(id=>{
+    const d=s.dist[id];
+    const via=s.prev[id]??'—';
+    const isUpd=s.updatedNodes.includes(id);
+    let rowClass='', statusText='·', statusColor='#c0b8a8';
+    if (id==='A') { rowClass='row-source'; statusText='start'; statusColor='#1e7f4e'; }
+    else if (id===s.current) { rowClass='row-current'; statusText='actief'; statusColor='#c0392b'; }
+    else if (s.visited.has(id)) { rowClass='row-visited'; statusText='✓ def.'; statusColor='#2563a8'; }
+    else if (d<Infinity) { statusText='voorl.'; statusColor='#b07030'; }
+    const tr=document.createElement('tr');
+    tr.className=rowClass;
+    tr.innerHTML=`<td><b>${id}</b></td><td class="${d===Infinity?'inf':isUpd?'updated':''}">${d===Infinity?'∞':d}</td><td>${via}</td><td style="font-size:0.76rem;color:${statusColor}">${statusText}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('explanation').innerHTML=s.explanation;
+  document.getElementById('step-counter').textContent=`Stap ${cur+1} / ${steps.length}`;
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===steps.length-1;
+}
+
+function nextStep(){if(cur<steps.length-1){cur++;render();}}
+function prevStep(){if(cur>0){cur--;render();}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextStep();if(e.key==='ArrowLeft')prevStep();});
+
+render();
+</script>
+</body>
+</html>
